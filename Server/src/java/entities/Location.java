@@ -4,6 +4,9 @@
  */
 package entities;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import java.io.Serializable;
@@ -13,12 +16,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  *
  * @author Logan
  */
 @Entity
+@Table(name = "tkj2567_addressbook_locations")
 public class Location implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,6 +45,21 @@ public class Location implements Serializable {
     
     @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     private User user;
+    
+    public JsonObject toJson(boolean withUser) {
+        JsonObjectBuilder out = Json.createObjectBuilder();
+        out.add("id", this.id);
+        out.add("name", this.name);
+        out.add("address", this.address);
+        out.add("latitude", this.latitude);
+        out.add("longitude", this.longitude);
+        
+        if (withUser) {
+            out.add("user", this.user.toJson(false));
+        }
+        
+        return out.build();
+    }
 
     public Integer getId() {
         return id;

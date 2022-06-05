@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.util.Date;
  * @author Logan
  */
 @Entity
+@Table(name = "tkj2567_addressbook_requests")
 public class Request implements Serializable {
 
     private static final long serialVersionUID = 1L;

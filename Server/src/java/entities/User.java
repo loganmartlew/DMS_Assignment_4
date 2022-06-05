@@ -4,6 +4,10 @@
  */
 package entities;
 
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.persistence.Column;
 import java.io.Serializable;
 import jakarta.persistence.Entity;
@@ -11,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.List;
 
 /**
@@ -18,6 +23,7 @@ import java.util.List;
  * @author Logan
  */
 @Entity
+@Table(name = "tkj2567_addressbook_users")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,6 +42,22 @@ public class User implements Serializable {
     
     @OneToMany(mappedBy="toUser")
     private List<Request> incomingRequests;
+    
+    public JsonObject toJson(boolean withLocations) {
+        JsonObjectBuilder out = Json.createObjectBuilder();
+        out.add("id", this.id);
+        out.add("name", this.name);
+        
+        if (withLocations) {
+            JsonArrayBuilder locations = Json.createArrayBuilder();
+            for (Location location : this.locations) {
+                locations.add(location.toJson(false));
+            }
+            out.add("locations", locations);
+        }
+        
+        return out.build();
+    }
 
     public Integer getId() {
         return id;
