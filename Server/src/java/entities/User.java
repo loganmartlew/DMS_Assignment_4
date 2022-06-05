@@ -53,6 +53,30 @@ public class User implements Serializable {
         this.name = name;
     }
 
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+    }
+
+    public List<Request> getOutgoingRequests() {
+        return outgoingRequests;
+    }
+
+    public void setOutgoingRequests(List<Request> outgoingRequests) {
+        this.outgoingRequests = outgoingRequests;
+    }
+
+    public List<Request> getIncomingRequests() {
+        return incomingRequests;
+    }
+
+    public void setIncomingRequests(List<Request> incomingRequests) {
+        this.incomingRequests = incomingRequests;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

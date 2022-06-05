@@ -4,6 +4,7 @@
  */
 package entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import java.io.Serializable;
 import jakarta.persistence.Entity;
@@ -37,7 +38,7 @@ public class Location implements Serializable {
     @Column
     private double longitude;
     
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     private User user;
 
     public Integer getId() {
@@ -78,6 +79,14 @@ public class Location implements Serializable {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
