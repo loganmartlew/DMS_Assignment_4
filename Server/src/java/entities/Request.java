@@ -4,38 +4,34 @@
  */
 package entities;
 
-import jakarta.persistence.Column;
 import java.io.Serializable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import java.util.List;
+import jakarta.persistence.ManyToOne;
 
 /**
  *
  * @author Logan
  */
 @Entity
-public class User implements Serializable {
+public class Request implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
-    @Column(unique=true)
-    private String name;
+    @ManyToOne(fetch=FetchType.LAZY)
+    private Location location;
     
-    @OneToMany(mappedBy="user")
-    private List<Location> locations;
+    @ManyToOne(fetch=FetchType.LAZY)
+    private User fromUser;
     
-    @OneToMany(mappedBy="fromUser")
-    private List<Request> outgoingRequests;
-    
-    @OneToMany(mappedBy="toUser")
-    private List<Request> incomingRequests;
+    @ManyToOne(fetch=FetchType.LAZY)
+    private User toUser;
 
     public Integer getId() {
         return id;
@@ -43,14 +39,6 @@ public class User implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-    
-    public String getName() {
-        return this.name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
@@ -63,10 +51,10 @@ public class User implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof User)) {
+        if (!(object instanceof Request)) {
             return false;
         }
-        User other = (User) object;
+        Request other = (Request) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -75,7 +63,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.User[ id=" + id + " ]";
+        return "entities.Request[ id=" + id + " ]";
     }
     
 }

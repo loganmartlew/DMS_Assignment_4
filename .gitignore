@@ -5,3 +5,4 @@ Server/nbproject/private/private.properties
 Client/.idea/gradle.xml
 Client/.idea/misc.xml
 Client/.idea/vcs.xml
+/Server/build/

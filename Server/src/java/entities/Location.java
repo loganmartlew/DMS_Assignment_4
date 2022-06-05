@@ -7,35 +7,38 @@ package entities;
 import jakarta.persistence.Column;
 import java.io.Serializable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import java.util.List;
+import jakarta.persistence.ManyToOne;
 
 /**
  *
  * @author Logan
  */
 @Entity
-public class User implements Serializable {
+public class Location implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
-    @Column(unique=true)
+    @Column
     private String name;
     
-    @OneToMany(mappedBy="user")
-    private List<Location> locations;
+    @Column
+    private String address;
     
-    @OneToMany(mappedBy="fromUser")
-    private List<Request> outgoingRequests;
+    @Column
+    private double latitude;
     
-    @OneToMany(mappedBy="toUser")
-    private List<Request> incomingRequests;
+    @Column
+    private double longitude;
+    
+    @ManyToOne(fetch=FetchType.LAZY)
+    private User user;
 
     public Integer getId() {
         return id;
@@ -44,13 +47,37 @@ public class User implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public String getName() {
-        return this.name;
+        return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     @Override
@@ -63,10 +90,10 @@ public class User implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof User)) {
+        if (!(object instanceof Location)) {
             return false;
         }
-        User other = (User) object;
+        Location other = (Location) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -75,7 +102,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.User[ id=" + id + " ]";
+        return "entities.Location[ id=" + id + " ]";
     }
     
 }
