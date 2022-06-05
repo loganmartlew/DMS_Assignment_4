@@ -40,6 +40,18 @@ public class UserDAO {
         return user;
     }
     
+    public User getUserByName(String name) {
+        Query query = em.createQuery("SELECT u FROM User u WHERE u.name = :name", User.class);
+        query.setParameter("name", name);
+        List<User> users = query.getResultList();
+        
+        if (users.size() < 1) {
+            return null;
+        }
+        
+        return users.get(0);
+    }
+    
     public List<Request> getUsersIncomingRequests(int id) {
         User user = em.find(User.class, id);
         return user.getIncomingRequests();
