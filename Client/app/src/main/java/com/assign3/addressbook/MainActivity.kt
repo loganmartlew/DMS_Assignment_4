@@ -3,6 +3,8 @@ package com.assign3.addressbook
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.EditText
 import android.widget.Button
 import com.assign3.addressbook.activities.LocationsListActivity
@@ -11,15 +13,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+    }
 
-        val buttonLogin: Button = findViewById(R.id.LoginButton);
+    fun onClick(view: View) {
         val intent = Intent(this@MainActivity, LocationsListActivity::class.java);
-        var username: EditText = findViewById(R.id.Nameet);
-        var uName = username.text.toString()
+        val nameInput = findViewById<EditText>(R.id.nameInput)
+        val name = nameInput.text.toString()
 
-        buttonLogin.setOnClickListener{
-            intent.putExtra("Username", uName);
-            startActivity(intent);
-        }
+        Log.i("login", name)
+        intent.putExtra("Username", name);
+        startActivity(intent);
     }
 }

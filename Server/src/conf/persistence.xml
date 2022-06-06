@@ -5,11 +5,12 @@
     <class>entities.Location</class>
     <class>entities.Request</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <jta-data-source>jdbc/MySQLDmsAssignmentResource</jta-data-source>
     <properties>
-      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://raptor2.aut.ac.nz:3306/testUnrestricted?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
+<!--      <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://raptor2.aut.ac.nz:3306/dmsAssignments?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="jakarta.persistence.jdbc.user" value="dmsstudent4"/>
       <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-      <property name="jakarta.persistence.jdbc.password" value="fpn871"/>
+      <property name="jakarta.persistence.jdbc.password" value="fpn871"/>-->
       <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
       <property name="eclipselink.deploy-on-startup" value="true" />
     </properties>

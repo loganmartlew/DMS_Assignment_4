@@ -1,5 +1,6 @@
 package com.assign3.addressbook.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.assign3.addressbook.R
 import com.assign3.addressbook.models.Location
 
-class LocationsAdapter(private val mLocations: List<Location>) : RecyclerView.Adapter<LocationsAdapter.ViewHolder>() {
+class LocationsAdapter(var mLocations: List<Location> = ArrayList()) : RecyclerView.Adapter<LocationsAdapter.ViewHolder>() {
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTextView: TextView = itemView.findViewById(R.id.locationAddress)
-        val addressTextView: TextView = itemView.findViewById(R.id.locationName)
+        val nameTextView: TextView = itemView.findViewById(R.id.locationName)
+        val addressTextView: TextView = itemView.findViewById(R.id.locationAddress)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationsAdapter.ViewHolder {
