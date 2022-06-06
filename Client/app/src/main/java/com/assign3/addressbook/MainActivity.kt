@@ -4,9 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
-import android.view.View
 import android.widget.Button
-import android.widget.Toast
+import com.assign3.addressbook.activities.LocationsListActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val buttonLogin: Button = findViewById(R.id.LoginButton);
-        val intent = Intent(this@MainActivity, ContactsPage::class.java);
+        val intent = Intent(this@MainActivity, LocationsListActivity::class.java);
         var username: EditText = findViewById(R.id.Nameet);
         var uName = username.text.toString()
 

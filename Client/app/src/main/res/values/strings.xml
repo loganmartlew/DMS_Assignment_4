@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">AddressBook</string>
+    <string name="app_name">Address Book</string>
+    <string name="activity_title_locations_list">My Locations</string>
+    <string name="activity_title_add_location">New Location</string>
     <string name="enter_name">Enter Name</string>
     <string name="login_button">Login</string>
+    <string name="use_current_location">Use Current Location</string>
 </resources>
