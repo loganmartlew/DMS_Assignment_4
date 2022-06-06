@@ -11,10 +11,14 @@ class LocationsListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacts_page)
 
+        val bundle: Bundle? = intent.extras;
+        val name: String? = intent.getStringExtra("Username");
+
         val addContactButton: View = findViewById(R.id.addContactButton);
         val intent = Intent(this@LocationsListActivity, AddLocationActivity::class.java);
 
         addContactButton.setOnClickListener{
+            intent.putExtra("Username", name);
             startActivity(intent);
         }
     }
