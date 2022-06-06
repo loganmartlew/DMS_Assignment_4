@@ -7,3 +7,4 @@ Client/.idea/misc.xml
 Client/.idea/vcs.xml
 /Server/build/
 Server/nbproject/private/private.properties
+*.properties
