@@ -3,9 +3,9 @@ package com.assign3.addressbook
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class ContactsView : AppCompatActivity() {
+class MapView : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_contacts_view)
+        setContentView(R.layout.activity_map_view)
     }
 }
