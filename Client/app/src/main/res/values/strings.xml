@@ -2,7 +2,8 @@
     <string name="app_name">Address Book</string>
     <string name="activity_title_locations_list">My Locations</string>
     <string name="activity_title_add_location">New Location</string>
-    <string name="enter_name">Enter Name</string>
-    <string name="login_button">Login</string>
-    <string name="use_current_location">Use Current Location</string>
+    <string name="action_login">Login</string>
+    <string name="action_use_current_location">Use Current Location</string>
+    <string name="action_view_on_map">View On Map</string>
+    <string name="placeholder_name_input">Enter Name</string>
 </resources>

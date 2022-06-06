@@ -7,6 +7,6 @@ import com.assign3.addressbook.R
 class AddLocationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_contact)
+        setContentView(R.layout.activity_add_location)
     }
 }

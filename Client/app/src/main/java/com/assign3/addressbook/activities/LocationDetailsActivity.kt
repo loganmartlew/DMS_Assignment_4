@@ -7,6 +7,6 @@ import com.assign3.addressbook.R
 class LocationDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_map_view)
+        setContentView(R.layout.activity_location_details)
     }
 }
