@@ -97,6 +97,7 @@ public class UserResource {
     public String createUser(String body) {
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonStructure bodyJson = jsonReader.read();
+        
         String name = ((JsonString) bodyJson.getValue("/name")).getString();
         
         User existingUser = userDao.getUserByName(name);

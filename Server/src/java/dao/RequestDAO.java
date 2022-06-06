@@ -12,6 +12,8 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import java.util.List;
 
 /**
  *
@@ -43,5 +45,11 @@ public class RequestDAO {
 
         em.persist(newRequest);
         return newRequest;
+    }
+    
+    public List<Request> getAllRequests() {
+        Query query = em.createQuery("SELECT r FROM Request r", Request.class);
+        List<Request> requests = query.getResultList();
+        return requests;
     }
 }

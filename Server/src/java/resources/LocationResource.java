@@ -68,6 +68,7 @@ public class LocationResource {
     public String createLocation(String body) {
         JsonReader jsonReader = Json.createReader(new StringReader(body));
         JsonStructure bodyJson = jsonReader.read();
+        
         String name = ((JsonString) bodyJson.getValue("/name")).getString();
         String address = ((JsonString) bodyJson.getValue("/address")).getString();
         String latitude = ((JsonString) bodyJson.getValue("/latitude")).getString();
