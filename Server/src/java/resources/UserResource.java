@@ -5,6 +5,7 @@
 package resources;
 
 import dao.UserDAO;
+import entities.Request;
 import entities.User;
 import jakarta.ejb.EJB;
 import jakarta.inject.Named;
@@ -60,6 +61,36 @@ public class UserResource {
         }
         
         return this.buildToString(user.toJson(true));
+    }
+    
+    @Path("{name}/incoming")
+    @GET
+    public String getIncomingRequests(@PathParam("name") String name) {
+        User user = userDao.getUserByName(name);
+        
+        JsonArrayBuilder array = Json.createArrayBuilder();
+        List<Request> requests = userDao.getUsersIncomingRequests(user.getId());
+        
+        for(Request request : requests) {
+            array.add(request.toJson());
+        }
+        
+        return this.buildToString(array.build());
+    }
+    
+    @Path("{name}/outgoing")
+    @GET
+    public String getOutgoingRequests(@PathParam("name") String name) {
+        User user = userDao.getUserByName(name);
+        
+        JsonArrayBuilder array = Json.createArrayBuilder();
+        List<Request> requests = userDao.getUsersOutgoingRequests(user.getId());
+        
+        for(Request request : requests) {
+            array.add(request.toJson());
+        }
+        
+        return this.buildToString(array.build());
     }
     
     @POST

@@ -4,6 +4,9 @@
  */
 package entities;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import java.io.Serializable;
@@ -44,6 +47,17 @@ public class Request implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date createdAt;
+    
+    public JsonObject toJson() {
+        JsonObjectBuilder out = Json.createObjectBuilder();
+        out.add("id", this.id);
+        out.add("location", this.location.toJson(false));
+        out.add("fromUser", this.fromUser.toJson(false));
+        out.add("toUser", this.toUser.toJson(false));
+        out.add("createdAt", this.createdAt.getTime());
+        
+        return out.build();
+    }
     
     @PrePersist
     protected void onCreate() {

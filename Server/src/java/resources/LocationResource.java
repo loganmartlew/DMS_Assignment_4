@@ -19,6 +19,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import java.io.StringReader;
@@ -45,10 +46,22 @@ public class LocationResource {
         List<Location> locations = locationDao.getAllLocations();
         
         for(Location location : locations) {
-            array.add(location.toJson(true));
+            array.add(location.toJson(false));
         }
         
         return this.buildToString(array.build());
+    }
+    
+    @Path("{id}")
+    @GET
+    public String getLocationById(@PathParam("id") String id) {
+        Location location = locationDao.getLocationById(Integer.parseInt(id));
+        
+        if (location == null) {
+            return "null";
+        }
+        
+        return this.buildToString(location.toJson(true));
     }
     
     @POST
