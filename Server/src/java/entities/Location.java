@@ -43,7 +43,7 @@ public class Location implements Serializable {
     @Column
     private double longitude;
     
-    @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.ALL)
     private User user;
     
     public JsonObject toJson(boolean withUser) {

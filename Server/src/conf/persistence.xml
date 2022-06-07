@@ -12,6 +12,7 @@
       <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
       <property name="jakarta.persistence.jdbc.password" value="fpn871"/>-->
       <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+      <property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.deploy-on-startup" value="true" />
     </properties>
   </persistence-unit>

@@ -20,7 +20,10 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.CacheControl;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -53,14 +56,21 @@ public class UserResource {
     
     @Path("{name}")
     @GET
-    public String getUserByName(@PathParam("name") String name) {
+    public Response getUserByName(@PathParam("name") String name) {
         User user = userDao.getUserByName(name);
         
         if (user == null) {
-            return "null";
+            return Response.ok("null").build();
         }
         
-        return this.buildToString(user.toJson(true));
+        String body = this.buildToString(user.toJson(true));
+        
+        CacheControl cc = new CacheControl();
+        cc.setNoCache(true);
+        
+        ResponseBuilder builder = Response.ok(body);
+        builder.cacheControl(cc);
+        return builder.build();
     }
     
     @Path("{name}/incoming")

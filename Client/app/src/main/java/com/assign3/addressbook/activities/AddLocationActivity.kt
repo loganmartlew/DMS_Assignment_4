@@ -9,6 +9,12 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.assign3.addressbook.R
+import com.assign3.addressbook.api.ApiInterface
+import com.assign3.addressbook.api.LocationDTO
+import com.assign3.addressbook.models.Location
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.*
 
 
@@ -24,16 +30,28 @@ class AddLocationActivity : AppCompatActivity() {
 
         val name: String? = intent.getStringExtra("Username");
 
-        val address: EditText = findViewById(R.id.nameEditText);
-
-//        getLatLongFromAddress(address.text.toString());
-
-        val intent = Intent(this@AddLocationActivity, LocationsListActivity::class.java);
+        val nameInput: EditText = findViewById(R.id.nameEditText);
+        val addressInput: EditText = findViewById(R.id.addressEditText);
         val button: Button = findViewById(R.id.submitContactButton);
 
+//        getLatLongFromAddress(addressInput.text.toString());
+
+
+
         button.setOnClickListener{
-            intent.putExtra("Username", name);
-            startActivity(intent);
+            val dto = LocationDTO(nameInput.text.toString(), addressInput.text.toString(), "0.0", "0.0", name!!)
+            val apiInterface = ApiInterface.create().createLocation(dto)
+            apiInterface.enqueue(object: Callback<Location> {
+                override fun onResponse(call: Call<Location>, response: Response<Location>) {
+                    val intent = Intent(this@AddLocationActivity, LocationsListActivity::class.java);
+                    intent.putExtra("Username", name);
+                    startActivity(intent);
+                }
+
+                override fun onFailure(call: Call<Location>, t: Throwable) {
+                    Log.d("AddLocationActivity", "Failed to add location")
+                }
+            })
         }
     }
 
