@@ -26,10 +26,10 @@ class AddLocationActivity : AppCompatActivity() {
 
         val address: EditText = findViewById(R.id.nameEditText);
 
-        getLatLongFromAddress(address.text.toString());
+//        getLatLongFromAddress(address.text.toString());
 
         val intent = Intent(this@AddLocationActivity, LocationsListActivity::class.java);
-        val button: Button = findViewById(R.id.addContactButton);
+        val button: Button = findViewById(R.id.submitContactButton);
 
         button.setOnClickListener{
             intent.putExtra("Username", name);
