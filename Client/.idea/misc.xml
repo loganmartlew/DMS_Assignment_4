@@ -3,17 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_add_contact.xml" value="0.33" />
-        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_contacts_page.xml" value="0.33" />
-        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_contacts_view.xml" value="0.5" />
-        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_locations_list.xml" value="0.36666666666666664" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_main.xml" value="0.35260416666666666" />
-        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/listcontact.xml" value="0.33" />
-        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/location_list_item.xml" value="0.5" />
-        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/user_list_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_add_contact.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_add_location.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_contacts_page.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_contacts_view.xml" value="0.33" />
-        <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_location_details.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_locations_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_map_view.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/listcontact.xml" value="0.33" />
       </map>
     </option>

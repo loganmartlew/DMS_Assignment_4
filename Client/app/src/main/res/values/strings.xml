@@ -6,4 +6,7 @@
     <string name="action_use_current_location">Use Current Location</string>
     <string name="action_view_on_map">View On Map</string>
     <string name="placeholder_name_input">Enter Name</string>
+    <string name="template_name_map">template Name Map</string>
+    <string name="template_address">template address</string>
+    <string name="template_lat">template lat</string>
 </resources>
