@@ -9,3 +9,5 @@ Client/.idea/vcs.xml
 Server/nbproject/private/private.properties
 *.properties
 /Server/dist/
+Client/.idea/misc.xml
+Server/nbproject/private/private.xml
