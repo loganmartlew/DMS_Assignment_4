@@ -16,6 +16,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.reflect.KFunction3
 
 
 class AddLocationActivity : AppCompatActivity() {
@@ -36,7 +37,7 @@ class AddLocationActivity : AppCompatActivity() {
 
         button.setOnClickListener{
 
-            fun callback(lat: Double, lng: Double) {
+            fun callback(lat: Double?, lng: Double?, address: String?) {
                 val dto = LocationDTO(nameInput.text.toString(), addressInput.text.toString(), lat.toString(), lng.toString(), name!!)
 
                 val apiInterface = ApiInterface.create().createLocation(dto)
@@ -55,11 +56,12 @@ class AddLocationActivity : AppCompatActivity() {
 
             // Get the name and address from the input fields
             GetLatLngFromAdd(::callback).execute(addressInput.text.toString().replace(" ", "+"))
+            getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString());
         }
 }
     // Get the latitude and longitude from the address
     companion object{
-        class GetLatLngFromAdd(var callback: (lat: Double, lng: Double) -> Unit) : AsyncTask<String, Void, String>() {
+        class GetLatLngFromAdd(var callback: KFunction3<Double?, Double?, String?, Unit>) : AsyncTask<String, Void, String>() {
 
             var lat: Double = 0.0;
             var lng: Double = 0.0;
@@ -68,6 +70,7 @@ class AddLocationActivity : AppCompatActivity() {
                 try {
                     var jsonObject = JSONObject(result);
 
+                    // Get the latitude and longitude from the JSON object
                     lat = jsonObject.getJSONArray("results")
                         .getJSONObject(0).getJSONObject("geometry")
                         .getJSONObject("location").getDouble("lat");
@@ -76,7 +79,8 @@ class AddLocationActivity : AppCompatActivity() {
                         .getJSONObject(0).getJSONObject("geometry")
                         .getJSONObject("location").getDouble("lng");
 
-                    callback(lat, lng)
+                    // Call the callback function
+                    callback(lat, lng, null)
 
                 }catch (e: Exception){
                     println(e);
@@ -92,7 +96,6 @@ class AddLocationActivity : AppCompatActivity() {
                     var url: String = String.format(
                         "https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk");
                     result = data.getURLData(url);
-                    println(address.toString());
                     return result;
                 }catch (e: Exception){
                     println(e);
@@ -101,6 +104,43 @@ class AddLocationActivity : AppCompatActivity() {
                 return result;
             }
 
+        }
+        // Get the address from the latitude and longitude
+        class getAddressFromLatLng(var callback: KFunction3<Double?, Double?, String?, Unit>) : AsyncTask<String, Void, String>() {
+
+            var address: String = "";
+
+            override fun onPostExecute(result: String?) {
+                try {
+
+                    var jsonObject = JSONObject(result);
+                    address = jsonObject.getJSONArray("results")
+                        .getJSONObject(0).getString("formatted_address");
+
+                    callback(null,null,address)
+                    
+                }catch (e: Exception){
+                    println(e);
+                    Log.d("AddLocationActivity", "Failed to get address from lat lng post execute")
+                }
+            }
+
+            override fun doInBackground(vararg params: String): String {
+                var result = "";
+                try {
+                    var lat: Double = params[0].toDouble();
+                    var lng: Double = params[1].toDouble();
+                    var data = HttpRequestHandler();
+                    var url: String = String.format(
+                        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk");
+                    result = data.getURLData(url);
+                    return result;
+                }catch (e: Exception){
+                    println(e);
+                    Log.d("AddLocationActivity", "Failed to get address from lat lng do in background")
+                }
+                return result;
+            }
         }
     }
 }
