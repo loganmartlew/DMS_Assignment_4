@@ -7,12 +7,11 @@ class HttpRequestHandler {
 
     fun getURLData(requestUrl: String) : String{
         var url: URL;
-        var response: String = "";
+        var response = "";
         try{
             url = URL(requestUrl)
             var connection: HttpURLConnection = url.openConnection() as HttpURLConnection;
             connection.requestMethod = "GET";
-            connection.setRequestProperty("Content-Type", "application/json");
 
             var responseCode: Int = connection.responseCode;
 

@@ -79,21 +79,24 @@ class AddLocationActivity : AppCompatActivity() {
                     callback(lat, lng)
 
                 }catch (e: Exception){
-                    Log.d("AddLocationActivity", "Failed to get lat lng")
+                    println(e);
+                    Log.d("AddLocationActivity", "Failed to get lat lng post execute")
                 }
             }
 
             override fun doInBackground(vararg params: String): String {
-                var result: String = "";
+                var result = "";
                 try {
                     var address: String = params[0];
-                    var data: HttpRequestHandler = HttpRequestHandler();
+                    var data = HttpRequestHandler();
                     var url: String = String.format(
                         "https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk");
                     result = data.getURLData(url);
+                    println(address.toString());
                     return result;
                 }catch (e: Exception){
-                    Log.d("AddLocationActivity", "Failed to get lat lng");
+                    println(e);
+                    Log.d("AddLocationActivity", "Failed to get lat lng do in background")
                 }
                 return result;
             }
