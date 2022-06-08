@@ -8,8 +8,23 @@ import dao.LocationDAO;
 import dto.LocationDTO;
 import entities.Location;
 import entities.User;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.inject.Named;
+import jakarta.jms.Connection;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSConsumer;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.MessageListener;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.ObjectMessage;
+import jakarta.jms.Queue;
+import jakarta.jms.Session;
+import jakarta.jms.TemporaryQueue;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonReader;
@@ -26,6 +41,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
+import messages.LocationMessage;
+import messages.LocationMessageType;
 
 /**
  *
@@ -36,6 +53,15 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class LocationResource {
+    
+    @Resource(mappedName = "jms/AddressBookConnectionFactory")
+    private ConnectionFactory connectionFactory;
+    
+    @Resource(mappedName = "jms/AddressBookLocationQueue")
+    private Queue queue;
+    
+    private Connection conn;
+    private Session session;
     
     @EJB
     LocationDAO locationDao;
@@ -55,13 +81,36 @@ public class LocationResource {
     @Path("{id}")
     @GET
     public String getLocationById(@PathParam("id") String id) {
-        Location location = locationDao.getLocationById(Integer.parseInt(id));
-        
-        if (location == null) {
-            return "null";
-        }
-        
-        return this.buildToString(location.toJson(true));
+//        try {
+//            LocationMessage<Integer> messageData = 
+//                new LocationMessage<Integer>(LocationMessageType.GET_BY_ID, Integer.parseInt(id));
+//
+//            MessageProducer producer = session.createProducer(queue);
+//            ObjectMessage message = session.createObjectMessage();
+//
+//            TemporaryQueue tempQueue = session.createTemporaryQueue();
+//            MessageConsumer consumer = session.createConsumer(tempQueue);
+////            consumer.setMessageListener(new Listener());
+//
+//            message.setObject(messageData);
+//            message.setJMSReplyTo(tempQueue);
+//            producer.send(message);
+//
+//            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+//            Location location = (Location) replyMessage.getObject();
+
+            Location location = locationDao.getLocationById(Integer.parseInt(id));
+
+            if (location == null) {
+                return "null";
+            }
+
+            return this.buildToString(location.toJson(true));
+//        } catch (JMSException e) {
+//            return "Messaging Error: " + e.getMessage();
+//        } catch (NullPointerException e) {
+//            return "Reply Message Not Recieved";
+//        }
     }
     
     @POST
@@ -81,9 +130,28 @@ public class LocationResource {
         dto.setLatitude(latitude);
         dto.setLongitude(longitude);
         dto.setUserName(userName);
-        
-        Location newLocation = locationDao.createLocation(dto);
-        return this.buildToString(newLocation.toJson(true));
+
+        try {
+            LocationMessage<LocationDTO> messageData = 
+                new LocationMessage<LocationDTO>(LocationMessageType.CREATE, dto);
+
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
+
+            message.setObject(messageData);
+            producer.send(message);
+            
+            return "Message Sent";
+        } catch (JMSException e) {
+            return "Message Not Sent: " + e.getMessage();
+        }
+    }
+    
+    private class Listener implements MessageListener {
+        @Override
+        public void onMessage(Message msg) {
+            System.out.println("Message Recieved");
+        }
     }
     
     private String buildToString(JsonStructure json) {
@@ -96,5 +164,21 @@ public class LocationResource {
         } catch(Exception e) {
             return "";
         }
+    }
+    
+    @PostConstruct
+    public void setupConnection() {
+        try {
+            conn = connectionFactory.createConnection();
+            session = conn.createSession();
+        } catch (JMSException e) {}
+    }
+    
+    @PreDestroy
+    public void destroyConnection() {
+        try {
+            if (session != null) session.close();
+            if (conn != null) conn.close();
+        } catch (JMSException e) {}
     }
 }
