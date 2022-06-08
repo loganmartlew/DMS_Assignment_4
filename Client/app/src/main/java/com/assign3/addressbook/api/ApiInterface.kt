@@ -18,10 +18,10 @@ interface ApiInterface {
     fun getUser(@Path("name") name: String): Call<User>
 
     @POST("locations")
-    fun createLocation(@Body location: LocationDTO): Call<Location>
+    fun createLocation(@Body location: LocationDTO): Call<Void>
 
     companion object {
-        var BASE_URL = "http://192.168.1.79:8080/addressbook/api/"
+        var BASE_URL = "http://192.168.1.220:8080/addressbook/api/"
 
         fun create() : ApiInterface {
             val retrofit = Retrofit.Builder()
