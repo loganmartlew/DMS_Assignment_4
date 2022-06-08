@@ -1,6 +1,6 @@
 package com.assign3.addressbook.activities
 
-import HttpRequests.HttpRequestHandler
+import com.assign3.addressbook.HttpRequests.HttpRequestHandler
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle

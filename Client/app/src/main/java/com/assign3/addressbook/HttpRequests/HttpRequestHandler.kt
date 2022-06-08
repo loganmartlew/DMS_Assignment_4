@@ -1,4 +1,4 @@
-package HttpRequests
+package com.assign3.addressbook.HttpRequests
 
 import java.net.HttpURLConnection
 import java.net.URL
