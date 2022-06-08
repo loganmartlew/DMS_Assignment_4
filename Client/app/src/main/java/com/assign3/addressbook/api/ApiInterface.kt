@@ -24,6 +24,9 @@ interface ApiInterface {
     @GET("users/{name}/outgoing")
     fun getOutgoingRequests(@Path("name") name: String): Call<List<Request>>
 
+    @POST("requests")
+    fun createRequest(@Body request: RequestDTO): Call<Void>
+
     companion object {
         var BASE_URL = "http://192.168.1.220:8080/addressbook/api/"
 

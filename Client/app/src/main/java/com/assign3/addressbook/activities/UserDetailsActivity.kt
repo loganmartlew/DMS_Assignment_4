@@ -26,13 +26,26 @@ class UserDetailsActivity: AppCompatActivity() {
         val userDetailsName: String = intent.getStringExtra("UsernameDetails") as String
 
         val locationsView: RecyclerView = findViewById(R.id.rvUserLocations)
-        val adapter = UserDetailsLocationsAdapter()
+        val adapter = UserDetailsLocationsAdapter(name, userDetailsName)
         locationsView.adapter = adapter
         locationsView.layoutManager = LinearLayoutManager(this)
 
         val userNameText: TextView = findViewById(R.id.userDetailsName)
         userNameText.text = userDetailsName
 
+        adapter.update = {
+            updateAdapter(adapter, name, userDetailsName, userNameText)
+        }
+
+        updateAdapter(adapter, name, userDetailsName, userNameText)
+    }
+
+    fun updateAdapter(
+        adapter: UserDetailsLocationsAdapter,
+        name: String,
+        userDetailsName: String,
+        userNameText: TextView
+    ) {
         val apiGetUser = ApiInterface.create().getUser(userDetailsName)
         apiGetUser.enqueue(object: Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {

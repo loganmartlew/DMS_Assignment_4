@@ -9,13 +9,25 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.assign3.addressbook.R
+import com.assign3.addressbook.api.ApiInterface
+import com.assign3.addressbook.api.RequestDTO
 import com.assign3.addressbook.models.Location
 import com.assign3.addressbook.models.Request
 import com.assign3.addressbook.models.RequestStatus
+import com.assign3.addressbook.models.User
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class UserDetailsLocationsAdapter(var mLocations: List<Location> = ArrayList(), var mRequests: List<Request> = ArrayList()): RecyclerView.Adapter<UserDetailsLocationsAdapter.ViewHolder>()  {
+class UserDetailsLocationsAdapter(
+    var mClientUserName: String,
+    var mDetailsUserName: String,
+    var mLocations: List<Location> = ArrayList(),
+    var mRequests: List<Request> = ArrayList(),
+): RecyclerView.Adapter<UserDetailsLocationsAdapter.ViewHolder>()  {
 
     private lateinit var context: Context;
+    lateinit var update: () -> Unit
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.userDetailsLocationName)
@@ -34,7 +46,19 @@ class UserDetailsLocationsAdapter(var mLocations: List<Location> = ArrayList(), 
         val location: Location = mLocations[position]
 
         viewHolder.detailsButton.setOnClickListener {
-            Log.d("Details", "Request location")
+            val dto = RequestDTO(location.id.toString(), mClientUserName, mDetailsUserName)
+
+            val apiInterface = ApiInterface.create().createRequest(dto)
+            apiInterface.enqueue(object: Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    if (response.isSuccessful) {
+                        update()
+                    }
+                }
+
+                override fun onFailure(call: Call<Void>?, t: Throwable?) {
+                }
+            })
         }
 
         mRequests.forEach {
