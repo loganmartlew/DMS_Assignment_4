@@ -7,8 +7,18 @@ package resources;
 import dao.UserDAO;
 import entities.Request;
 import entities.User;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
 import jakarta.inject.Named;
+import jakarta.jms.Connection;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.ObjectMessage;
+import jakarta.jms.Queue;
+import jakarta.jms.Session;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonReader;
@@ -28,6 +38,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
+import messages.UserMessage;
+import messages.UserMessageType;
 
 /**
  *
@@ -38,6 +50,15 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource {
+    
+    @Resource(mappedName = "jms/AddressBookConnectionFactory")
+    private ConnectionFactory connectionFactory;
+    
+    @Resource(mappedName = "jms/AddressBookUserQueue")
+    private Queue queue;
+    
+    private Connection conn;
+    private Session session;
     
     @EJB
     private UserDAO userDao;
@@ -110,14 +131,20 @@ public class UserResource {
         
         String name = ((JsonString) bodyJson.getValue("/name")).getString();
         
-        User existingUser = userDao.getUserByName(name);
-        
-        if (existingUser == null) {
-            User newUser = userDao.createUser(name);
-            return this.buildToString(newUser.toJson(true));
+        try {
+            UserMessage<String> messageData = 
+                new UserMessage<String>(UserMessageType.CREATE, name);
+
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
+
+            message.setObject(messageData);
+            producer.send(message);
+            
+            return "Message Sent";
+        } catch (JMSException e) {
+            return "Message Not Sent: " + e.getMessage();
         }
-        
-        return this.buildToString(existingUser.toJson(true));
     }
     
     private String buildToString(JsonStructure json) {
@@ -130,5 +157,21 @@ public class UserResource {
         } catch(Exception e) {
             return "";
         }
+    }
+    
+    @PostConstruct
+    public void setupConnection() {
+        try {
+            conn = connectionFactory.createConnection();
+            session = conn.createSession();
+        } catch (JMSException e) {}
+    }
+    
+    @PreDestroy
+    public void destroyConnection() {
+        try {
+            if (session != null) session.close();
+            if (conn != null) conn.close();
+        } catch (JMSException e) {}
     }
 }

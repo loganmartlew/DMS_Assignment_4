@@ -4,27 +4,22 @@
  */
 package mdb;
 
-import dao.LocationDAO;
-import dto.LocationDTO;
-import entities.Location;
+import dao.UserDAO;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
 import jakarta.ejb.ActivationConfigProperty;
 import jakarta.ejb.EJB;
 import jakarta.ejb.MessageDriven;
-import jakarta.ejb.MessageDrivenContext;
 import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
-import jakarta.jms.MessageProducer;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.Session;
-import jakarta.jms.TextMessage;
-import messages.LocationMessage;
-import messages.LocationMessageType;
+import messages.UserMessage;
+import messages.UserMessageType;
 
 /**
  *
@@ -32,17 +27,17 @@ import messages.LocationMessageType;
  */
 @MessageDriven(activationConfig = {
     @ActivationConfigProperty(propertyName = "clientId",
-            propertyValue = "jms/AddressBookLocationQueue"),
+            propertyValue = "jms/AddressBookUserQueue"),
     @ActivationConfigProperty(propertyName = "destinationLookup",
-            propertyValue = "jms/AddressBookLocationQueue"),
+            propertyValue = "jms/AddressBookUserQueue"),
     @ActivationConfigProperty(propertyName = "subscriptionDurability",
             propertyValue = "Durable"),
     @ActivationConfigProperty(propertyName = "subscriptionName",
-            propertyValue = "jms/AddressBookLocationQueue"),
+            propertyValue = "jms/AddressBookUserQueue"),
     @ActivationConfigProperty(propertyName = "destinationType",
             propertyValue = "jakarta.jms.Queue")
 })
-public class LocationMDB implements MessageListener {
+public class UserMDB implements MessageListener {
     
     @Resource(mappedName = "jms/AddressBookConnectionFactory")
     private ConnectionFactory connectionFactory;
@@ -51,36 +46,20 @@ public class LocationMDB implements MessageListener {
     private Session session;
     
     @EJB
-    LocationDAO locationDao;
-
+    UserDAO userDao;
+    
     @Override
     public void onMessage(Message message) {
         try {
             
             if (message instanceof ObjectMessage) {
                 
-                LocationMessage locationMessage = (LocationMessage) ((ObjectMessage) message).getObject();
-                LocationMessageType type = locationMessage.getType();
+                UserMessage userMessage = (UserMessage) ((ObjectMessage) message).getObject();
+                UserMessageType type = userMessage.getType();
                 
-                if (type == LocationMessageType.CREATE) {
-                    LocationMessage<LocationDTO> typedMessage = locationMessage;
-                    locationDao.createLocation(typedMessage.getData());
-                }
-                
-                if (type == LocationMessageType.GET_BY_ID) {
-                    LocationMessage<Integer> typedMessage = locationMessage;
-                    int id = typedMessage.getData();
-                    
-                    Location location = locationDao.getLocationById(id);
-                    
-                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
-                    ObjectMessage replyMessage = session.createObjectMessage();
-                    
-                    replyMessage.setObject(location);
-                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
-                    producer.send(replyMessage);
-                    producer.close();
-                    return;
+                if (type == UserMessageType.CREATE) {
+                    UserMessage<String> typedMessage = userMessage;
+                    userDao.createUser(typedMessage.getData());
                 }
                 
             }
