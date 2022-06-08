@@ -7,7 +7,11 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.assign3.addressbook.R
+import com.assign3.addressbook.api.ApiInterface
 import com.assign3.addressbook.models.Request
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class NotificationsListAdapter(var mRequests: List<Request> = ArrayList()): RecyclerView.Adapter<NotificationsListAdapter.ViewHolder>() {
 
@@ -39,7 +43,31 @@ class NotificationsListAdapter(var mRequests: List<Request> = ArrayList()): Recy
         val requestLocationName = viewHolder.requestLocationName
         requestLocationName.text = request.location.name
 
+        val acceptButton = viewHolder.acceptButton
+        acceptButton.setOnClickListener {
+            val apiAccept = ApiInterface.create().acceptRequest(request.id)
+            apiAccept.enqueue(object: Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    update()
+                }
 
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                }
+            })
+        }
+
+        val denyButton = viewHolder.denyButton
+        denyButton.setOnClickListener {
+            val apiDeny = ApiInterface.create().denyRequest(request.id)
+            apiDeny.enqueue(object: Callback<Void> {
+                override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                    update()
+                }
+
+                override fun onFailure(call: Call<Void>, t: Throwable) {
+                }
+            })
+        }
     }
 
     override fun getItemCount(): Int {

@@ -14,6 +14,7 @@ import com.assign3.addressbook.adapters.LocationsListAdapter
 import com.assign3.addressbook.adapters.NotificationsListAdapter
 import com.assign3.addressbook.api.ApiInterface
 import com.assign3.addressbook.models.Request
+import com.assign3.addressbook.models.RequestStatus
 import com.assign3.addressbook.models.User
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,6 +44,10 @@ class NotificationsListFragment: Fragment() {
         locationsView.adapter = adapter
         locationsView.layoutManager = LinearLayoutManager(activity)
 
+        adapter.update = {
+            updateAdapter(adapter, name) {}
+        }
+
         val refreshLayout: SwipeRefreshLayout = activity.findViewById(R.id.refreshNotifications)
         refreshLayout.setOnRefreshListener {
             updateAdapter(adapter, name) {
@@ -60,7 +65,13 @@ class NotificationsListFragment: Fragment() {
         apiInterface.enqueue(object: Callback<List<Request>> {
             override fun onResponse(call: Call<List<Request>>, response: Response<List<Request>>) {
                 if(response?.body() != null) {
-                    adapter.mRequests = response.body()!!
+                    val requests = response.body()!!
+
+                    val filteredRequests = requests.filter {
+                        it.status == RequestStatus.PENDING.text
+                    }
+
+                    adapter.mRequests = filteredRequests
                     adapter.notifyDataSetChanged()
                     callback()
                 }
