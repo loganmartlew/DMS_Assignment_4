@@ -6,17 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".activities.LocationDetailsActivity">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
-        android:layout_width="332dp"
-        android:layout_height="531dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.77" />
-
     <TextView
         android:id="@+id/PersonNametv"
         android:layout_width="297dp"
@@ -59,11 +48,25 @@
         android:id="@+id/longitudetv"
         android:layout_width="296dp"
         android:layout_height="22dp"
-        android:text="tempalte long"
+        android:text="@string/template_long"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.143" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:contentDescription="@string/Map_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.595"
+        app:srcCompat="@drawable/ic_launcher_background"
+        tools:ignore="ImageContrastCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>

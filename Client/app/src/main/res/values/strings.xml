@@ -28,4 +28,6 @@
     <string name="template_name_map">template Name Map</string>
     <string name="template_address">template address</string>
     <string name="template_lat">template lat</string>
+    <string name="Map_description">map of location</string>
+    <string name="template_long">template long</string>
 </resources>

@@ -118,7 +118,7 @@ class AddLocationActivity : AppCompatActivity() {
                         .getJSONObject(0).getString("formatted_address");
 
                     callback(null,null,address)
-                    
+
                 }catch (e: Exception){
                     println(e);
                     Log.d("AddLocationActivity", "Failed to get address from lat lng post execute")
