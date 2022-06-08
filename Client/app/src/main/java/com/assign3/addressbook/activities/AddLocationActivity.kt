@@ -1,8 +1,10 @@
 package com.assign3.addressbook.activities
 
+import HttpRequests.HttpRequestHandler
 import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -12,6 +14,7 @@ import com.assign3.addressbook.R
 import com.assign3.addressbook.api.ApiInterface
 import com.assign3.addressbook.api.LocationDTO
 import com.assign3.addressbook.models.Location
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,11 +37,11 @@ class AddLocationActivity : AppCompatActivity() {
         val addressInput: EditText = findViewById(R.id.addressEditText);
         val button: Button = findViewById(R.id.submitContactButton);
 
-//        getLatLongFromAddress(addressInput.text.toString());
-
-
-
         button.setOnClickListener{
+
+            // Get the name and address from the input fields
+            getLatLngFromAdd().execute(addressInput.text.toString().replace(" ", "+"));
+
             val dto = LocationDTO(nameInput.text.toString(), addressInput.text.toString(), "0.0", "0.0", name!!)
             val apiInterface = ApiInterface.create().createLocation(dto)
             apiInterface.enqueue(object: Callback<Location> {
@@ -53,20 +56,43 @@ class AddLocationActivity : AppCompatActivity() {
                 }
             })
         }
-    }
+}
+    // Get the latitude and longitude from the address
+    companion object{
+        class getLatLngFromAdd() : AsyncTask<String, Void, String>() {
 
-    private fun getLatLongFromAddress(address: String) {
-        val geoCoder = Geocoder(this, Locale.getDefault())
-        try {
-            val addresses: List<Address> = geoCoder.getFromLocationName(address, 1)
-            if (addresses.isNotEmpty()) {
-                lat = addresses[0].getLatitude() as Double;
-                lng = addresses[0].getLongitude() as Double;
-                Log.d("Latitude", "" + lat)
-                Log.d("Longitude", "" + lng)
+            override fun onPostExecute(result: String?) {
+                try {
+                    var jsonObject: JSONObject = JSONObject(result);
+
+                    var lat: Double = jsonObject.getJSONArray("results")
+                        .getJSONObject(0).getJSONObject("geometry")
+                        .getJSONObject("location").getDouble("lat");
+
+                    var lng: Double = jsonObject.getJSONArray("results")
+                        .getJSONObject(0).getJSONObject("geometry")
+                        .getJSONObject("location").getDouble("lng");
+
+                }catch (e: Exception){
+                    Log.d("AddLocationActivity", "Failed to get lat lng")
+                }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+
+            override fun doInBackground(vararg params: String): String {
+                var result: String = "";
+                try {
+                    var address: String = params[0];
+                    var data: HttpRequestHandler = HttpRequestHandler();
+                    var url: String = String.format(
+                        "https://maps.googleapis.com/maps/api/geocode/json?address=%s", address);
+                    result = data.getURLData(url);
+                    return result;
+                }catch (e: Exception){
+                    Log.d("AddLocationActivity", "Failed to get lat lng");
+                }
+                return result;
+            }
+
         }
     }
 }
