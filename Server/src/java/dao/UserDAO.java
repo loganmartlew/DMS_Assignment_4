@@ -67,11 +67,25 @@ public class UserDAO {
     
     public List<Request> getUsersIncomingRequests(int id) {
         User user = em.find(User.class, id);
+        
+        Query locationQuery = em.createQuery("SELECT r FROM Request r WHERE r.toUser.id = :id", Location.class);
+        locationQuery.setParameter("id", user.getId());
+        List<Request> requests = locationQuery.getResultList();
+        
+        user.setIncomingRequests(requests);
+        
         return user.getIncomingRequests();
     }
     
     public List<Request> getUsersOutgoingRequests(int id) {
         User user = em.find(User.class, id);
+        
+        Query locationQuery = em.createQuery("SELECT r FROM Request r WHERE r.fromUser.id = :id", Location.class);
+        locationQuery.setParameter("id", user.getId());
+        List<Request> requests = locationQuery.getResultList();
+        
+        user.setOutgoingRequests(requests);
+        
         return user.getOutgoingRequests();
     }
     

@@ -1,6 +1,7 @@
 package com.assign3.addressbook.api
 
 import com.assign3.addressbook.models.Location
+import com.assign3.addressbook.models.Request
 import com.assign3.addressbook.models.User
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -19,6 +20,9 @@ interface ApiInterface {
 
     @POST("locations")
     fun createLocation(@Body location: LocationDTO): Call<Void>
+
+    @GET("users/{name}/outgoing")
+    fun getOutgoingRequests(@Path("name") name: String): Call<List<Request>>
 
     companion object {
         var BASE_URL = "http://192.168.1.220:8080/addressbook/api/"

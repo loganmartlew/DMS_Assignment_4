@@ -27,13 +27,16 @@ import java.util.Date;
  * @author Logan
  */
 @Entity
-@Table(name = "tkj2567_addressbook_requests")
+@Table(name = "tkj2567_addressbook_requests_2")
 public class Request implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    
+    @Column
+    private RequestStatus status = RequestStatus.PENDING;
     
     @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     private Location location;
@@ -51,6 +54,7 @@ public class Request implements Serializable {
     public JsonObject toJson() {
         JsonObjectBuilder out = Json.createObjectBuilder();
         out.add("id", this.id);
+        out.add("status", this.status.toString());
         out.add("location", this.location.toJson(false));
         out.add("fromUser", this.fromUser.toJson(false));
         out.add("toUser", this.toUser.toJson(false));
@@ -70,6 +74,14 @@ public class Request implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public RequestStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RequestStatus status) {
+        this.status = status;
     }
 
     public Location getLocation() {
