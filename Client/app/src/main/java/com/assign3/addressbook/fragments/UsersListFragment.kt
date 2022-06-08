@@ -61,6 +61,7 @@ class UsersListFragment: Fragment() {
                     val filteredUsers = users.filter { it.name != name }
 
                     adapter.mUsers = filteredUsers
+                    adapter.userName = name
                     adapter.notifyDataSetChanged()
                     callback()
                 }

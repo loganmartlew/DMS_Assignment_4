@@ -48,6 +48,11 @@
             android:exported="false" />
         <activity
             android:name=".activities.LocationDetailsActivity"
+            android:label="@string/activity_title_location_details"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserDetailsActivity"
+            android:label="@string/activity_title_user_details"
             android:exported="false" />
 
         <meta-data
