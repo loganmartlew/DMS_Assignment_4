@@ -2,10 +2,19 @@
     <string name="app_name">Address Book</string>
     <string name="activity_title_locations_list">My Locations</string>
     <string name="activity_title_add_location">New Location</string>
+
     <string name="action_login">Login</string>
     <string name="action_use_current_location">Use Current Location</string>
     <string name="action_view_on_map">View On Map</string>
+
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+    <string name="nav_locations_text">My Locations</string>
+    <string name="nav_users_text">Other Users</string>
+    <string name="nav_notifications_text">Notifications</string>
+
     <string name="placeholder_name_input">Enter Name</string>
+
     <string name="template_name_map">template Name Map</string>
     <string name="template_address">template address</string>
     <string name="template_lat">template lat</string>
