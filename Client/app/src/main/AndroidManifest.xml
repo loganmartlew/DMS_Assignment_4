@@ -39,9 +39,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LocationsListActivity"
-            android:label="@string/activity_title_locations_list"
-            android:exported="false" />
+            android:name=".activities.AppActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AddressBook.NoActionBar"/>
         <activity
             android:name=".activities.AddLocationActivity"
             android:label="@string/activity_title_add_location"

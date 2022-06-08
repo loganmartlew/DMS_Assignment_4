@@ -43,7 +43,7 @@ class AddLocationActivity : AppCompatActivity() {
             val apiInterface = ApiInterface.create().createLocation(dto)
             apiInterface.enqueue(object: Callback<Location> {
                 override fun onResponse(call: Call<Location>, response: Response<Location>) {
-                    val intent = Intent(this@AddLocationActivity, LocationsListActivity::class.java);
+                    val intent = Intent(this@AddLocationActivity, AppActivity::class.java);
                     intent.putExtra("Username", name);
                     startActivity(intent);
                 }
