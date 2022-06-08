@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.assign3.addressbook.R
 import com.assign3.addressbook.activities.AddLocationActivity
-import com.assign3.addressbook.adapters.LocationsAdapter
+import com.assign3.addressbook.adapters.LocationsListAdapter
 import com.assign3.addressbook.api.ApiInterface
 import com.assign3.addressbook.models.User
 import retrofit2.Call
@@ -39,7 +38,7 @@ class LocationsListFragment: Fragment() {
         val name: String = activity.intent.getStringExtra("Username") as String
 
         val locationsView: RecyclerView = activity.findViewById(R.id.rvLocations)
-        val adapter = LocationsAdapter()
+        val adapter = LocationsListAdapter()
         locationsView.adapter = adapter
         locationsView.layoutManager = LinearLayoutManager(activity)
 
@@ -62,7 +61,7 @@ class LocationsListFragment: Fragment() {
         }
     }
 
-    private fun updateAdapter(adapter: LocationsAdapter, name: String, callback: () -> Unit) {
+    private fun updateAdapter(adapter: LocationsListAdapter, name: String, callback: () -> Unit) {
         val apiInterface = ApiInterface.create().getUser(name)
         apiInterface.enqueue(object: Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {

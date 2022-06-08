@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.assign3.addressbook.R
-import com.assign3.addressbook.adapters.UsersAdapter
+import com.assign3.addressbook.adapters.UsersListAdapter
 import com.assign3.addressbook.api.ApiInterface
 import com.assign3.addressbook.models.User
 import retrofit2.Call
@@ -33,29 +33,34 @@ class UsersListFragment: Fragment() {
 
         val activity = requireActivity();
 
+        val name: String = activity.intent.getStringExtra("Username") as String
+
         val locationsView: RecyclerView = activity.findViewById(R.id.rvUsers)
-        val adapter = UsersAdapter()
+        val adapter = UsersListAdapter()
         locationsView.adapter = adapter
         locationsView.layoutManager = LinearLayoutManager(activity)
 
         val refreshLayout: SwipeRefreshLayout = activity.findViewById(R.id.refreshUsers)
         refreshLayout.setOnRefreshListener {
-            updateAdapter(adapter) {
+            updateAdapter(adapter, name) {
                 refreshLayout.isRefreshing = false
             }
         }
 
-        updateAdapter(adapter) {
+        updateAdapter(adapter, name) {
             refreshLayout.isRefreshing = false
         }
     }
 
-    private fun updateAdapter(adapter: UsersAdapter, callback: () -> Unit) {
+    private fun updateAdapter(adapter: UsersListAdapter, name: String, callback: () -> Unit) {
         val apiInterface = ApiInterface.create().getUsers()
         apiInterface.enqueue(object: Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if(response?.body() != null) {
-                    adapter.mUsers = response.body()!!
+                    val users = response.body()!!
+                    val filteredUsers = users.filter { it.name != name }
+
+                    adapter.mUsers = filteredUsers
                     adapter.notifyDataSetChanged()
                     callback()
                 }

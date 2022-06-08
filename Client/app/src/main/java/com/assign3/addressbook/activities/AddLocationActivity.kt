@@ -2,8 +2,6 @@ package com.assign3.addressbook.activities
 
 import HttpRequests.HttpRequestHandler
 import android.content.Intent
-import android.location.Address
-import android.location.Geocoder
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +16,6 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 
 class AddLocationActivity : AppCompatActivity() {
@@ -40,7 +37,7 @@ class AddLocationActivity : AppCompatActivity() {
         button.setOnClickListener{
 
             // Get the name and address from the input fields
-            getLatLngFromAdd().execute(addressInput.text.toString().replace(" ", "+"));
+            GetLatLngFromAdd().execute(addressInput.text.toString().replace(" ", "+"));
 
             val dto = LocationDTO(nameInput.text.toString(), addressInput.text.toString(), "0.0", "0.0", name!!)
             val apiInterface = ApiInterface.create().createLocation(dto)
@@ -59,7 +56,7 @@ class AddLocationActivity : AppCompatActivity() {
 }
     // Get the latitude and longitude from the address
     companion object{
-        class getLatLngFromAdd() : AsyncTask<String, Void, String>() {
+        class GetLatLngFromAdd() : AsyncTask<String, Void, String>() {
 
             override fun onPostExecute(result: String?) {
                 try {
