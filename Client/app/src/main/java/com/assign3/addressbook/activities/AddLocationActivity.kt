@@ -1,9 +1,7 @@
 package com.assign3.addressbook.activities
 
-import HttpRequests.HttpRequestHandler
+import com.assign3.addressbook.HttpRequests.HttpRequestHandler
 import android.content.Intent
-import android.location.Address
-import android.location.Geocoder
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +16,6 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 
 class AddLocationActivity : AppCompatActivity() {
