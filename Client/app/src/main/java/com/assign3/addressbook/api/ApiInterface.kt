@@ -24,6 +24,9 @@ interface ApiInterface {
     @GET("users/{name}/outgoing")
     fun getOutgoingRequests(@Path("name") name: String): Call<List<Request>>
 
+    @GET("users/{name}/incoming")
+    fun getIncomingRequests(@Path("name") name: String): Call<List<Request>>
+
     @POST("requests")
     fun createRequest(@Body request: RequestDTO): Call<Void>
 

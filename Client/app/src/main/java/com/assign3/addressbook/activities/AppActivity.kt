@@ -9,6 +9,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.assign3.addressbook.R
 import com.assign3.addressbook.fragments.LocationsListFragment
+import com.assign3.addressbook.fragments.NotificationsListFragment
 import com.assign3.addressbook.fragments.UsersListFragment
 import com.google.android.material.navigation.NavigationView
 
@@ -52,7 +53,9 @@ class AppActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelectedL
                     .commit()
             }
             R.id.nav_notifications -> {
-
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, NotificationsListFragment())
+                    .commit()
             }
         }
 
