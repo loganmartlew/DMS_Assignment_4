@@ -17,14 +17,9 @@ class HttpRequestHandler {
             var responseCode: Int = connection.responseCode;
 
             if(responseCode == HttpURLConnection.HTTP_OK){
-                var line: String;
                 var inputStream = connection.inputStream
                 var inputStreamReader = inputStream.bufferedReader();
                 response = inputStreamReader.readText()
-
-                while(inputStreamReader.readLine().also { line = it } != null){
-                    response += line
-                }
             }else{
                 response = "Response code: " + responseCode;
             }
