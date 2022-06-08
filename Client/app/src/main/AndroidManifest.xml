@@ -39,15 +39,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LocationsListActivity"
-            android:label="@string/activity_title_locations_list"
-            android:exported="false" />
+            android:name=".activities.AppActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AddressBook.NoActionBar"/>
         <activity
             android:name=".activities.AddLocationActivity"
             android:label="@string/activity_title_add_location"
             android:exported="false" />
         <activity
             android:name=".activities.LocationDetailsActivity"
+            android:label="@string/activity_title_location_details"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserDetailsActivity"
+            android:label="@string/activity_title_user_details"
             android:exported="false" />
 
         <meta-data

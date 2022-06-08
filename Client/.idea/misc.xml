@@ -6,14 +6,22 @@
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2225" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2225" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_add_contact.xml" value="0.33" />
-        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_add_location.xml" value="0.18802083333333333" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_add_location.xml" value="0.33" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_app.xml" value="0.18697916666666667" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_contacts_page.xml" value="0.33" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_contacts_view.xml" value="0.5" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_locations_list.xml" value="0.36666666666666664" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_main.xml" value="0.35260416666666666" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_user_details.xml" value="0.2" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_user_list.xml" value="0.365625" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/activity_users_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/fragment_locations_list.xml" value="0.18697916666666667" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/fragment_users_list.xml" value="0.33" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/item_user_locations_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/item_users_list.xml" value="0.36666666666666664" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/listcontact.xml" value="0.33" />
-        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/location_list_item.xml" value="0.5" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/location_list_item.xml" value="0.33" />
+        <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/nav_header.xml" value="0.365625" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/layout/user_list_item.xml" value="0.36666666666666664" />
         <entry key="..\:/AUT/Sem5/DMS/DMS_Assignment_4/Client/app/src/main/res/menu/navigation_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/coen-/Desktop/DMS_Assignment_4/Client/app/src/main/res/layout/activity_add_contact.xml" value="0.36666666666666664" />

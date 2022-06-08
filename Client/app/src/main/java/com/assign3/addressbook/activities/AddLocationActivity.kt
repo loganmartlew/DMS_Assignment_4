@@ -37,13 +37,13 @@ class AddLocationActivity : AppCompatActivity() {
         button.setOnClickListener{
 
             // Get the name and address from the input fields
-            getLatLngFromAdd().execute(addressInput.text.toString().replace(" ", "+"));
+            GetLatLngFromAdd().execute(addressInput.text.toString().replace(" ", "+"));
 
             val dto = LocationDTO(nameInput.text.toString(), addressInput.text.toString(), "0.0", "0.0", name!!)
             val apiInterface = ApiInterface.create().createLocation(dto)
             apiInterface.enqueue(object: Callback<Location> {
                 override fun onResponse(call: Call<Location>, response: Response<Location>) {
-                    val intent = Intent(this@AddLocationActivity, LocationsListActivity::class.java);
+                    val intent = Intent(this@AddLocationActivity, AppActivity::class.java);
                     intent.putExtra("Username", name);
                     startActivity(intent);
                 }
@@ -56,7 +56,7 @@ class AddLocationActivity : AppCompatActivity() {
 }
     // Get the latitude and longitude from the address
     companion object{
-        class getLatLngFromAdd() : AsyncTask<String, Void, String>() {
+        class GetLatLngFromAdd() : AsyncTask<String, Void, String>() {
 
             override fun onPostExecute(result: String?) {
                 try {

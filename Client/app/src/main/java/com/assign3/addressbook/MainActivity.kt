@@ -6,8 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
-import android.widget.Button
-import com.assign3.addressbook.activities.LocationsListActivity
+import com.assign3.addressbook.activities.AppActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onClick(view: View) {
-        val intent = Intent(this@MainActivity, LocationsListActivity::class.java);
+        val intent = Intent(this@MainActivity, AppActivity::class.java);
         val nameInput = findViewById<EditText>(R.id.nameInput)
         val name = nameInput.text.toString()
 
