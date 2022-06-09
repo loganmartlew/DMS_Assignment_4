@@ -45,33 +45,8 @@ class AddLocationActivity : AppCompatActivity() {
         val addressInput: EditText = findViewById(R.id.addressEditText);
         val button: Button = findViewById(R.id.submitContactButton);
         val switch = findViewById<Switch>(R.id.switch1);
-
         var fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
 
-        button.setOnClickListener{
-
-            fun callback(lat: Double?, lng: Double?, address: String?) {
-                val dto = LocationDTO(nameInput.text.toString(), addressInput.text.toString(), lat.toString(), lng.toString(), name!!)
-
-                val apiInterface = ApiInterface.create().createLocation(dto)
-                apiInterface.enqueue(object: Callback<Void> {
-                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                        val intent = Intent(this@AddLocationActivity, AppActivity::class.java)
-                        intent.putExtra("Username", name)
-                        startActivity(intent)
-                    }
-
-                    override fun onFailure(call: Call<Void>, t: Throwable) {
-                        Log.d("AddLocationActivity", "Failed to add location")
-                    }
-                })
-            }
-                if(lat != 0.0 && lng != 0.0){
-                    getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString());
-                }else{
-                    GetLatLngFromAdd(::callback).execute(addressInput.text.toString());
-                }
-        }
         // Check if the user has granted location permission
         switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -102,6 +77,34 @@ class AddLocationActivity : AppCompatActivity() {
                 addressInput.isEnabled = true
             }
         }
+
+        // Submit button
+        button.setOnClickListener{
+
+            fun callback(lat: Double?, lng: Double?, address: String?) {
+                val dto = LocationDTO(nameInput.text.toString(), addressInput.text.toString(), lat.toString(), lng.toString(), name!!)
+
+                val apiInterface = ApiInterface.create().createLocation(dto)
+                apiInterface.enqueue(object: Callback<Void> {
+                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                        val intent = Intent(this@AddLocationActivity, AppActivity::class.java)
+                        intent.putExtra("Username", name)
+                        startActivity(intent)
+                    }
+
+                    override fun onFailure(call: Call<Void>, t: Throwable) {
+                        Log.d("AddLocationActivity", "Failed to add location")
+                    }
+                })
+            }
+            if(lat == 0.0 && lng == 0.0) {
+                GetLatLngFromAdd(::callback).execute(addressInput.text.toString().replace(" ", "+"))
+            }else {
+                GetAddressFromLatLng(::callback).execute(lat.toString(), lng.toString())
+            }
+
+        }
+
 }
     // Get the latitude and longitude from the address
     companion object {
@@ -110,6 +113,7 @@ class AddLocationActivity : AppCompatActivity() {
 
             var lat: Double = 0.0
             var lng: Double = 0.0
+            var address: String = ""
 
             override fun onPostExecute(result: String?) {
                 try {
@@ -125,7 +129,7 @@ class AddLocationActivity : AppCompatActivity() {
                         .getJSONObject("location").getDouble("lng")
 
                     // Call the callback function
-                    callback(lat, lng, null)
+                    callback(lat, lng, address)
 
                 } catch (e: Exception) {
                     println(e)
@@ -136,7 +140,7 @@ class AddLocationActivity : AppCompatActivity() {
             override fun doInBackground(vararg params: String): String {
                 var result = ""
                 try {
-                    var address: String = params[0]
+                    address = params[0]
                     var data = HttpRequestHandler()
                     var url: String = String.format(
                         "https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk"
@@ -152,9 +156,11 @@ class AddLocationActivity : AppCompatActivity() {
 
         }
         // Get the address from the latitude and longitude
-        class getAddressFromLatLng(var callback: KFunction3<Double?, Double?, String?, Unit>) : AsyncTask<String, Void, String>() {
+        class GetAddressFromLatLng(var callback: KFunction3<Double?, Double?, String?, Unit>) : AsyncTask<String, Void, String>() {
 
             var address: String = ""
+            var lat: Double = 0.0
+            var lng: Double = 0.0
 
             override fun onPostExecute(result: String?) {
                 try {
@@ -163,7 +169,7 @@ class AddLocationActivity : AppCompatActivity() {
                     address = jsonObject.getJSONArray("results")
                         .getJSONObject(0).getString("formatted_address");
 
-                    callback(null,null,address)
+                    callback(lat,lng,address)
 
                 }catch (e: Exception){
                     println(e)
@@ -174,8 +180,8 @@ class AddLocationActivity : AppCompatActivity() {
             override fun doInBackground(vararg params: String): String {
                 var result = ""
                 try {
-                    var lat: Double = params[0].toDouble()
-                    var lng: Double = params[1].toDouble()
+                    lat = params[0].toDouble()
+                    lng = params[1].toDouble()
                     var data = HttpRequestHandler()
                     var url: String = String.format(
                         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk");

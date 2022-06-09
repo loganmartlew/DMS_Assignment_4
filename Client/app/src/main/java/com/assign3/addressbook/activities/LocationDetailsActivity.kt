@@ -61,7 +61,7 @@ class LocationDetailsActivity : AppCompatActivity() {
 
                 var latLng: String = params[0]!!
                 var data = HttpRequestHandler();
-                var url: String = "https://maps.googleapis.com/maps/api/staticmap?center=$latLng&zoom=6&size=400x400&markers=color:blue%7Clabel:S%7C$latLng&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk";
+                var url: String = "https://maps.googleapis.com/maps/api/staticmap?center=$latLng&zoom=16&size=400x400&markers=color:blue%7Clabel:S%7C$latLng&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk";
                 val mapImage: Bitmap = data.getURLImage(url)!!;
                 return mapImage;
                 }
