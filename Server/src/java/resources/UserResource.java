@@ -208,12 +208,21 @@ public class UserResource {
             MessageProducer producer = session.createProducer(queue);
             ObjectMessage message = session.createObjectMessage();
 
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
+
             message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
             producer.send(message);
+
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            User user = (User) replyMessage.getObject();
             
-            return "Message Sent";
+            return this.buildToString(user.toJson(true));
         } catch (JMSException e) {
             return "Message Not Sent: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
     }
     

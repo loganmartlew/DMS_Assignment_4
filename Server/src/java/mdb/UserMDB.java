@@ -64,7 +64,12 @@ public class UserMDB implements MessageListener {
                 
                 if (type == UserMessageType.CREATE) {
                     UserMessage<String> typedMessage = userMessage;
-                    User user = userDao.createUser(typedMessage.getData());
+                    
+                    User user = userDao.getUserByName(typedMessage.getData());
+                    
+                    if (user == null) {
+                        user = userDao.createUser(typedMessage.getData());
+                    }
                     
                     MessageProducer producer = session.createProducer(message.getJMSReplyTo());
                     ObjectMessage replyMessage = session.createObjectMessage();

@@ -9,6 +9,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface ApiInterface {
+    @POST("users")
+    fun login(@Body user: UserDTO): Call<Void>
+
     @GET("users")
     fun getUsers(): Call<List<User>>
 
