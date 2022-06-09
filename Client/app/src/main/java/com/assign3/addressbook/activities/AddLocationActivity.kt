@@ -69,7 +69,7 @@ class AddLocationActivity : AppCompatActivity() {
                 if(lat != 0.0 && lng != 0.0){
                     getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString());
                 }else{
-                    var address = GetLatLngFromAdd(::callback).execute(addressInput.text.toString());
+                    GetLatLngFromAdd(::callback).execute(addressInput.text.toString());
                 }
         }
         // Check if the user has granted location permission
