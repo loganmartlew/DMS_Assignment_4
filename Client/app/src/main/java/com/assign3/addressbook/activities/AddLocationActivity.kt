@@ -65,13 +65,12 @@ class AddLocationActivity : AppCompatActivity() {
                         Log.d("AddLocationActivity", "Failed to add location")
                     }
                 })
-
+            }
                 if(lat != 0.0 && lng != 0.0){
                     getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString());
                 }else{
                     var address = GetLatLngFromAdd(::callback).execute(addressInput.text.toString());
                 }
-            }
         }
         // Check if the user has granted location permission
         switch.setOnCheckedChangeListener { _, isChecked ->
