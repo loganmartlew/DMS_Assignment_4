@@ -3,8 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< Updated upstream
             <file>file:/C:/Users/coen-/Desktop/DMS_Assignment_4/Server/src/java/resources/LocationResource.java</file>
             <file>file:/C:/Users/coen-/Desktop/DMS_Assignment_4/Server/src/java/dto/LocationDTO.java</file>
+=======
+            <file>file:/D:/AUT/Sem5/DMS/DMS_Assignment_4/Server/src/java/mdb/UserMDB.java</file>
+>>>>>>> Stashed changes
         </group>
     </open-files>
 </project-private>

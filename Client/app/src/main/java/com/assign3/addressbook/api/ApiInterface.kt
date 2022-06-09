@@ -37,7 +37,7 @@ interface ApiInterface {
     fun denyRequest(@Path("id") id: Int): Call<Void>
 
     companion object {
-        var BASE_URL = "http://192.168.1.79:8080/addressbook/api/"
+        var BASE_URL = "http://192.168.1.220:8080/addressbook/api/"
 
         fun create() : ApiInterface {
             val retrofit = Retrofit.Builder()
