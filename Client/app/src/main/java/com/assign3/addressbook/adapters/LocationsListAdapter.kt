@@ -46,7 +46,9 @@ class LocationsListAdapter(var mLocations: List<Location> = ArrayList(), var use
         mapButton.setOnClickListener {
             val intent = Intent(context, LocationDetailsActivity::class.java)
             intent.putExtra("Username", userName)
-            intent.putExtra("Location", location.id)
+            intent.putExtra("lat", location.latitude)
+            intent.putExtra("long", location.longitude)
+            intent.putExtra("address", location.address)
             context.startActivity(intent)
         }
     }

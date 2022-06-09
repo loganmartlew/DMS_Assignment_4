@@ -19,14 +19,19 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class LocationDetailsActivity : AppCompatActivity() {
 
-    val lat get() = intent.getDoubleExtra("lat", 0.0)
-    val long get() = intent.getDoubleExtra("long", 0.0)
-    val name get() = intent.getStringExtra("name")
-    val address get() = intent.getStringExtra("address")
+    var lat: Double = 0.0
+    var long: Double = 0.0
+    var name: String = ""
+    var address: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location_details)
+
+        lat = intent.getDoubleExtra("lat", 0.0)
+        long = intent.getDoubleExtra("long", 0.0)
+        name = intent.getStringExtra("Username")!!
+        address = intent.getStringExtra("address")!!
 
         var latLng: String = "$lat+$long"
 
@@ -53,13 +58,11 @@ class LocationDetailsActivity : AppCompatActivity() {
         class getStaticMap(): AsyncTask<String, Void, Bitmap>(){
 
             override fun doInBackground(vararg params: String?): Bitmap {
-                val mapImage: Bitmap
+
                 var latLng: String = params[0]!!
                 var data = HttpRequestHandler();
-                var url: String = "https://maps.googleapis.com/maps/api/staticmap?center=$latLng&zoom=6&size=400x400" +
-                            "&markers=color:blue%7Clabel:S%$latLng" +
-                            "&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk&signature=YOUR_SIGNATURE";
-                mapImage = data.getURLImage(url)!!;
+                var url: String = "https://maps.googleapis.com/maps/api/staticmap?center=$latLng&zoom=6&size=400x400&markers=color:blue%7Clabel:S%7C$latLng&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk";
+                val mapImage: Bitmap = data.getURLImage(url)!!;
                 return mapImage;
                 }
             }

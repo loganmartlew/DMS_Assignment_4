@@ -1,6 +1,7 @@
 package com.assign3.addressbook.HttpRequests
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.Image
 import android.util.Log
 import java.net.HttpURLConnection
@@ -42,9 +43,10 @@ class HttpRequestHandler {
             var responseCode: Int = connection.responseCode;
 
             if(responseCode == HttpURLConnection.HTTP_OK){
-                var response = connection.content as Bitmap;
+                var response = connection.inputStream;
 
-                return response;
+
+                return BitmapFactory.decodeStream(response);
             }else{
                 Log.d("response: ",responseCode.toString());
             }
