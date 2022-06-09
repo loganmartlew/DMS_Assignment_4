@@ -39,6 +39,7 @@ class LocationsListFragment: Fragment() {
 
         val locationsView: RecyclerView = activity.findViewById(R.id.rvLocations)
         val adapter = LocationsListAdapter()
+        adapter.userName = name;
         locationsView.adapter = adapter
         locationsView.layoutManager = LinearLayoutManager(activity)
 

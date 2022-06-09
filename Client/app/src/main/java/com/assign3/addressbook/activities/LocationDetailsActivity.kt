@@ -28,7 +28,7 @@ class LocationDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location_details)
 
-        var latLng: String = "$lat, $long"
+        var latLng: String = "$lat+$long"
 
         val mapOwnerTextView = findViewById<TextView>(R.id.PersonNametv).apply {
             text = name
@@ -56,10 +56,9 @@ class LocationDetailsActivity : AppCompatActivity() {
                 val mapImage: Bitmap
                 var latLng: String = params[0]!!
                 var data = HttpRequestHandler();
-                var url: String = String.format(
-                    "https://maps.googleapis.com/maps/api/staticmap?center=$latLng&zoom=6&size=400x400\n" +
-                            "&markers=color:blue%7Clabel:S%7C$latLng" +
-                            "&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk&signature=YOUR_SIGNATURE");
+                var url: String = "https://maps.googleapis.com/maps/api/staticmap?center=$latLng&zoom=6&size=400x400" +
+                            "&markers=color:blue%7Clabel:S%$latLng" +
+                            "&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk&signature=YOUR_SIGNATURE";
                 mapImage = data.getURLImage(url)!!;
                 return mapImage;
                 }
