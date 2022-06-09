@@ -5,6 +5,8 @@
 package mdb;
 
 import dao.UserDAO;
+import entities.Request;
+import entities.User;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
@@ -16,8 +18,11 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
+import jakarta.jms.MessageProducer;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.Session;
+import java.io.Serializable;
+import java.util.List;
 import messages.UserMessage;
 import messages.UserMessageType;
 
@@ -59,9 +64,74 @@ public class UserMDB implements MessageListener {
                 
                 if (type == UserMessageType.CREATE) {
                     UserMessage<String> typedMessage = userMessage;
-                    userDao.createUser(typedMessage.getData());
+                    User user = userDao.createUser(typedMessage.getData());
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject(user);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
                 }
                 
+                if (type == UserMessageType.GET_ALL) {
+                    List<User> users = userDao.getAllUsers();
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject((Serializable) users);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
+                }
+                
+                if (type == UserMessageType.GET_BY_NAME) {
+                    UserMessage<String> typedMessage = userMessage;
+                    User user = userDao.getUserByName(typedMessage.getData());
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject(user);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
+                }
+                
+                if (type == UserMessageType.GET_INCOMING) {
+                    UserMessage<String> typedMessage = userMessage;
+                    User user = userDao.getUserByName(typedMessage.getData());
+                    List<Request> requests = userDao.getUsersIncomingRequests(user.getId());
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject((Serializable) requests);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
+                }
+                
+                if (type == UserMessageType.GET_OUTGOING) {
+                    UserMessage<String> typedMessage = userMessage;
+                    User user = userDao.getUserByName(typedMessage.getData());
+                    List<Request> requests = userDao.getUsersOutgoingRequests(user.getId());
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject((Serializable) requests);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
+                }
             }
             
         } catch (JMSException e) {
@@ -72,6 +142,7 @@ public class UserMDB implements MessageListener {
     public void setupConnection() {
         try {
             conn = connectionFactory.createConnection();
+            conn.start();
             session = conn.createSession();
         } catch (JMSException e) {}
     }

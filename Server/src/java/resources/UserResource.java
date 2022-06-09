@@ -15,10 +15,12 @@ import jakarta.inject.Named;
 import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
+import jakarta.jms.MessageConsumer;
 import jakarta.jms.MessageProducer;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.Queue;
 import jakarta.jms.Session;
+import jakarta.jms.TemporaryQueue;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonReader;
@@ -66,62 +68,130 @@ public class UserResource {
     @GET
     public String getAllUsers() {
         JsonArrayBuilder array = Json.createArrayBuilder();
-        List<User> users = userDao.getAllUsers();
         
-        for(User user : users) {
-            array.add(user.toJson(false));
+         try {
+            UserMessage messageData = 
+                new UserMessage(UserMessageType.GET_ALL, "");
+
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
+
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
+
+            message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
+            producer.send(message);
+
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            List<User> users = (List<User>) replyMessage.getObject();
+            
+            for(User user : users) {
+                array.add(user.toJson(false));
+            }
+
+            return this.buildToString(array.build());
+        } catch (JMSException e) {
+            return "Messaging Error: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
-        
-        return this.buildToString(array.build());
     }
     
     @Path("{name}")
     @GET
-    public Response getUserByName(@PathParam("name") String name) {
-        User user = userDao.getUserByName(name);
-        
-        if (user == null) {
-            return Response.ok("null").build();
+    public String getUserByName(@PathParam("name") String name) {
+        try {
+            UserMessage<String> messageData = 
+                new UserMessage<String>(UserMessageType.GET_BY_NAME, name);
+            
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
+
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
+
+            message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
+            producer.send(message);
+
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            User user = (User) replyMessage.getObject();
+            
+            return this.buildToString(user.toJson(true));
+        } catch (JMSException e) {
+            return "Messaging Error: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
-        
-        String body = this.buildToString(user.toJson(true));
-        
-        CacheControl cc = new CacheControl();
-        cc.setNoCache(true);
-        
-        ResponseBuilder builder = Response.ok(body);
-        builder.cacheControl(cc);
-        return builder.build();
     }
     
     @Path("{name}/incoming")
     @GET
     public String getIncomingRequests(@PathParam("name") String name) {
-        User user = userDao.getUserByName(name);
-        
         JsonArrayBuilder array = Json.createArrayBuilder();
-        List<Request> requests = userDao.getUsersIncomingRequests(user.getId());
         
-        for(Request request : requests) {
-            array.add(request.toJson());
+        try {
+            UserMessage<String> messageData = 
+                new UserMessage<String>(UserMessageType.GET_INCOMING, name);
+            
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
+
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
+
+            message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
+            producer.send(message);
+
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            List<Request> requests = (List<Request>) replyMessage.getObject();
+            
+            for(Request request : requests) {
+                array.add(request.toJson());
+            }
+            
+            return this.buildToString(array.build());
+        } catch (JMSException e) {
+            return "Messaging Error: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
-        
-        return this.buildToString(array.build());
     }
     
     @Path("{name}/outgoing")
     @GET
     public String getOutgoingRequests(@PathParam("name") String name) {
-        User user = userDao.getUserByName(name);
-        
         JsonArrayBuilder array = Json.createArrayBuilder();
-        List<Request> requests = userDao.getUsersOutgoingRequests(user.getId());
         
-        for(Request request : requests) {
-            array.add(request.toJson());
+        try {
+            UserMessage<String> messageData = 
+                new UserMessage<String>(UserMessageType.GET_OUTGOING, name);
+            
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
+
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
+
+            message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
+            producer.send(message);
+
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            List<Request> requests = (List<Request>) replyMessage.getObject();
+            
+            for(Request request : requests) {
+                array.add(request.toJson());
+            }
+            
+            return this.buildToString(array.build());
+        } catch (JMSException e) {
+            return "Messaging Error: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
-        
-        return this.buildToString(array.build());
     }
     
     @POST
@@ -163,6 +233,7 @@ public class UserResource {
     public void setupConnection() {
         try {
             conn = connectionFactory.createConnection();
+            conn.start();
             session = conn.createSession();
         } catch (JMSException e) {}
     }
