@@ -1,17 +1,26 @@
 package com.assign3.addressbook.activities
 
+import android.Manifest
 import com.assign3.addressbook.HttpRequests.HttpRequestHandler
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Switch
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.assign3.addressbook.MainActivity
 import com.assign3.addressbook.R
 import com.assign3.addressbook.api.ApiInterface
 import com.assign3.addressbook.api.LocationDTO
 import com.assign3.addressbook.models.Location
+import com.google.android.gms.location.LocationServices
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,6 +33,7 @@ class AddLocationActivity : AppCompatActivity() {
     var lat = 0.0
     var lng = 0.0
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,6 +44,9 @@ class AddLocationActivity : AppCompatActivity() {
         val nameInput: EditText = findViewById(R.id.nameEditText);
         val addressInput: EditText = findViewById(R.id.addressEditText);
         val button: Button = findViewById(R.id.submitContactButton);
+        val switch = findViewById<Switch>(R.id.switch1);
+
+        var fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
 
         button.setOnClickListener{
 
@@ -55,8 +68,30 @@ class AddLocationActivity : AppCompatActivity() {
             }
 
             // Get the name and address from the input fields
-            GetLatLngFromAdd(::callback).execute(addressInput.text.toString().replace(" ", "+"))
-            getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString());
+            switch.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                    {
+                        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                    }
+                    fusedLocationProvider.lastLocation.addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            val location = task.result
+                            if (location != null) {
+                                lat = location.latitude
+                                lng = location.longitude
+                                val address = getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString())
+                                addressInput.setText(address.get())
+
+                            }else{
+                                Toast.makeText(this, "Could not get location", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                } else {
+                    GetLatLngFromAdd(::callback).execute(addressInput.text.toString().replace(" ", "+"))
+                }
+            }
         }
 }
     // Get the latitude and longitude from the address
