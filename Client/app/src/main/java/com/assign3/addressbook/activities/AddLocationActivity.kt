@@ -30,8 +30,8 @@ import kotlin.reflect.KFunction3
 
 class AddLocationActivity : AppCompatActivity() {
 
-    var lat = 0.0
-    var lng = 0.0
+    private var lat = 0.0
+    private var lng = 0.0
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,12 +65,17 @@ class AddLocationActivity : AppCompatActivity() {
                         Log.d("AddLocationActivity", "Failed to add location")
                     }
                 })
+
+                if(lat != 0.0 && lng != 0.0){
+                    getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString());
+                }else{
+                    var address = GetLatLngFromAdd(::callback).execute(addressInput.text.toString());
+                }
             }
         }
         // Check if the user has granted location permission
         switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-
                 // disable address EditText
                 addressInput.isEnabled = false
 
@@ -88,24 +93,21 @@ class AddLocationActivity : AppCompatActivity() {
                             lat = location.latitude
                             lng = location.longitude
 
-                            // Get the address of the location
-                            val address = getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString())
-                            addressInput.setText(address.get())
-
                         }else{
                             Toast.makeText(this, "Could not get location", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             } else {
-                // Get the address of the location
-                GetLatLngFromAdd(::callback).execute(addressInput.text.toString().replace(" ", "+"))
+                // enable address EditText
+                addressInput.isEnabled = true
             }
         }
 }
     // Get the latitude and longitude from the address
-    companion object{
-        class GetLatLngFromAdd(var callback: KFunction3<Double?, Double?, String?, Unit>) : AsyncTask<String, Void, String>() {
+    companion object {
+        class GetLatLngFromAdd(var callback: KFunction3<Double?, Double?, String?, Unit>) :
+            AsyncTask<String, Void, String>() {
 
             var lat: Double = 0.0
             var lng: Double = 0.0
@@ -126,7 +128,7 @@ class AddLocationActivity : AppCompatActivity() {
                     // Call the callback function
                     callback(lat, lng, null)
 
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     println(e)
                     Log.d("AddLocationActivity", "Failed to get lat lng post execute")
                 }
@@ -138,10 +140,11 @@ class AddLocationActivity : AppCompatActivity() {
                     var address: String = params[0]
                     var data = HttpRequestHandler()
                     var url: String = String.format(
-                        "https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk");
+                        "https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk"
+                    );
                     result = data.getURLData(url)
                     return result
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     println(e)
                     Log.d("AddLocationActivity", "Failed to get lat lng do in background")
                 }
