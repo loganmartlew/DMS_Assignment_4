@@ -106,6 +106,7 @@ public class LocationResource {
             }
 
             return this.buildToString(location.toJson(true));
+//            return location.getName();
 //        } catch (JMSException e) {
 //            return "Messaging Error: " + e.getMessage();
 //        } catch (NullPointerException e) {

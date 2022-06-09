@@ -13,7 +13,6 @@ import jakarta.annotation.Resource;
 import jakarta.ejb.ActivationConfigProperty;
 import jakarta.ejb.EJB;
 import jakarta.ejb.MessageDriven;
-import jakarta.ejb.MessageDrivenContext;
 import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
@@ -22,7 +21,6 @@ import jakarta.jms.MessageListener;
 import jakarta.jms.MessageProducer;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.Session;
-import jakarta.jms.TextMessage;
 import messages.LocationMessage;
 import messages.LocationMessageType;
 
