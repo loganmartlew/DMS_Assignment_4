@@ -21,6 +21,8 @@ import jakarta.jms.MessageListener;
 import jakarta.jms.MessageProducer;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.Session;
+import java.io.Serializable;
+import java.util.List;
 import messages.LocationMessage;
 import messages.LocationMessageType;
 
@@ -62,7 +64,29 @@ public class LocationMDB implements MessageListener {
                 
                 if (type == LocationMessageType.CREATE) {
                     LocationMessage<LocationDTO> typedMessage = locationMessage;
-                    locationDao.createLocation(typedMessage.getData());
+                    Location location = locationDao.createLocation(typedMessage.getData());
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject(location);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
+                }
+                
+                if (type == LocationMessageType.GET_ALL) {
+                    List<Location> locations = locationDao.getAllLocations();
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject((Serializable) locations);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
                 }
                 
                 if (type == LocationMessageType.GET_BY_ID) {
@@ -84,6 +108,7 @@ public class LocationMDB implements MessageListener {
             }
             
         } catch (JMSException e) {
+            System.out.println("LocationMDB Messaging Error: " + e.getMessage());
         }
     }
     
@@ -91,6 +116,7 @@ public class LocationMDB implements MessageListener {
     public void setupConnection() {
         try {
             conn = connectionFactory.createConnection();
+            conn.start();
             session = conn.createSession();
         } catch (JMSException e) {}
     }

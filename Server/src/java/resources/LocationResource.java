@@ -69,49 +69,62 @@ public class LocationResource {
     @GET
     public String getAllLocations() {
         JsonArrayBuilder array = Json.createArrayBuilder();
-        List<Location> locations = locationDao.getAllLocations();
         
-        for(Location location : locations) {
-            array.add(location.toJson(false));
+        try {
+            LocationMessage messageData = 
+                new LocationMessage(LocationMessageType.GET_ALL, "");
+
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
+
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
+
+            message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
+            producer.send(message);
+
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            List<Location> locations = (List<Location>) replyMessage.getObject();
+            
+            for(Location location : locations) {
+                array.add(location.toJson(false));
+            }
+
+            return this.buildToString(array.build());
+        } catch (JMSException e) {
+            return "Messaging Error: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
-        
-        return this.buildToString(array.build());
     }
     
     @Path("{id}")
     @GET
     public String getLocationById(@PathParam("id") String id) {
-//        try {
-//            LocationMessage<Integer> messageData = 
-//                new LocationMessage<Integer>(LocationMessageType.GET_BY_ID, Integer.parseInt(id));
-//
-//            MessageProducer producer = session.createProducer(queue);
-//            ObjectMessage message = session.createObjectMessage();
-//
-//            TemporaryQueue tempQueue = session.createTemporaryQueue();
-//            MessageConsumer consumer = session.createConsumer(tempQueue);
-////            consumer.setMessageListener(new Listener());
-//
-//            message.setObject(messageData);
-//            message.setJMSReplyTo(tempQueue);
-//            producer.send(message);
-//
-//            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
-//            Location location = (Location) replyMessage.getObject();
+        try {
+            LocationMessage<Integer> messageData = 
+                new LocationMessage<Integer>(LocationMessageType.GET_BY_ID, Integer.parseInt(id));
 
-            Location location = locationDao.getLocationById(Integer.parseInt(id));
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
 
-            if (location == null) {
-                return "null";
-            }
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
 
+            message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
+            producer.send(message);
+
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            Location location = (Location) replyMessage.getObject();
+            
             return this.buildToString(location.toJson(true));
-//            return location.getName();
-//        } catch (JMSException e) {
-//            return "Messaging Error: " + e.getMessage();
-//        } catch (NullPointerException e) {
-//            return "Reply Message Not Recieved";
-//        }
+        } catch (JMSException e) {
+            return "Messaging Error: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
+        }
     }
     
     @POST
@@ -138,20 +151,22 @@ public class LocationResource {
 
             MessageProducer producer = session.createProducer(queue);
             ObjectMessage message = session.createObjectMessage();
+            
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
 
             message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
             producer.send(message);
             
-            return "Message Sent";
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            Location location = (Location) replyMessage.getObject();
+            
+            return this.buildToString(location.toJson(true));
         } catch (JMSException e) {
             return "Message Not Sent: " + e.getMessage();
-        }
-    }
-    
-    private class Listener implements MessageListener {
-        @Override
-        public void onMessage(Message msg) {
-            System.out.println("Message Recieved");
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
     }
     
@@ -171,6 +186,7 @@ public class LocationResource {
     public void setupConnection() {
         try {
             conn = connectionFactory.createConnection();
+            conn.start();
             session = conn.createSession();
         } catch (JMSException e) {}
     }
