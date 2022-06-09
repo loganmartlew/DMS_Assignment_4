@@ -6,6 +6,7 @@ package mdb;
 
 import dao.RequestDAO;
 import dto.RequestDTO;
+import entities.Request;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
@@ -17,8 +18,11 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.MessageListener;
+import jakarta.jms.MessageProducer;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.Session;
+import java.io.Serializable;
+import java.util.List;
 import messages.RequestMessage;
 import messages.RequestMessageType;
 
@@ -60,17 +64,57 @@ public class RequestMDB implements MessageListener {
                 
                 if (type == RequestMessageType.CREATE) {
                     RequestMessage<RequestDTO> typedMessage = requestMessage;
-                    requestDao.createRequest(typedMessage.getData());
+                    Request request = requestDao.createRequest(typedMessage.getData());
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject(request);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
                 }
                 
                 if (type == RequestMessageType.ACCEPT) {
                     RequestMessage<String> typedMessage = requestMessage;
-                    requestDao.acceptRequest(Integer.parseInt(typedMessage.getData()));
+                    Request request = requestDao.acceptRequest(Integer.parseInt(typedMessage.getData()));
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject(request);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
                 }
                 
                 if (type == RequestMessageType.DENY) {
                     RequestMessage<String> typedMessage = requestMessage;
-                    requestDao.denyRequest(Integer.parseInt(typedMessage.getData()));
+                    Request request = requestDao.denyRequest(Integer.parseInt(typedMessage.getData()));
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject(request);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
+                }
+                
+                if (type == RequestMessageType.GET_ALL) {
+                    List<Request> requests = requestDao.getAllRequests();
+                    
+                    MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    ObjectMessage replyMessage = session.createObjectMessage();
+                    
+                    replyMessage.setObject((Serializable) requests);
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    producer.send(replyMessage);
+                    producer.close();
+                    return;
                 }
                 
             }
@@ -83,6 +127,7 @@ public class RequestMDB implements MessageListener {
     public void setupConnection() {
         try {
             conn = connectionFactory.createConnection();
+            conn.start();
             session = conn.createSession();
         } catch (JMSException e) {}
     }

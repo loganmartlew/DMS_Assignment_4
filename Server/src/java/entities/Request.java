@@ -38,13 +38,13 @@ public class Request implements Serializable {
     @Column
     private RequestStatus status = RequestStatus.PENDING;
     
-    @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.ALL)
     private Location location;
     
-    @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.ALL)
     private User fromUser;
     
-    @ManyToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.ALL)
     private User toUser;
     
     @Temporal(TemporalType.TIMESTAMP)

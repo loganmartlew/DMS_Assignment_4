@@ -6,6 +6,7 @@ package resources;
 
 import dao.RequestDAO;
 import dto.RequestDTO;
+import entities.Location;
 import entities.Request;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -15,10 +16,12 @@ import jakarta.inject.Named;
 import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
+import jakarta.jms.MessageConsumer;
 import jakarta.jms.MessageProducer;
 import jakarta.jms.ObjectMessage;
 import jakarta.jms.Queue;
 import jakarta.jms.Session;
+import jakarta.jms.TemporaryQueue;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonReader;
@@ -36,6 +39,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
+import messages.LocationMessage;
+import messages.LocationMessageType;
 import messages.RequestMessage;
 import messages.RequestMessageType;
 
@@ -64,13 +69,34 @@ public class RequestResource {
     @GET
     public String getAllRequests() {
         JsonArrayBuilder array = Json.createArrayBuilder();
-        List<Request> requests = requestDao.getAllRequests();
         
-        for(Request request : requests) {
-            array.add(request.toJson());
+        try {
+            RequestMessage messageData = 
+                new RequestMessage(RequestMessageType.GET_ALL, "");
+
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
+
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
+
+            message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
+            producer.send(message);
+
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            List<Request> requests = (List<Request>) replyMessage.getObject();
+            
+            for(Request request : requests) {
+                array.add(request.toJson());
+            }
+
+            return this.buildToString(array.build());
+        } catch (JMSException e) {
+            return "Messaging Error: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
-        
-        return this.buildToString(array.build());
     }
     
     @POST
@@ -93,13 +119,22 @@ public class RequestResource {
 
             MessageProducer producer = session.createProducer(queue);
             ObjectMessage message = session.createObjectMessage();
+            
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
 
             message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
             producer.send(message);
             
-            return "Message Sent";
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            Request request = (Request) replyMessage.getObject();
+            
+            return this.buildToString(request.toJson());
         } catch (JMSException e) {
             return "Message Not Sent: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
     }
     
@@ -113,12 +148,21 @@ public class RequestResource {
             MessageProducer producer = session.createProducer(queue);
             ObjectMessage message = session.createObjectMessage();
 
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
+
             message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
             producer.send(message);
             
-            return "Message Sent";
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            Request request = (Request) replyMessage.getObject();
+            
+            return this.buildToString(request.toJson());
         } catch (JMSException e) {
             return "Message Not Sent: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
     }
     
@@ -129,15 +173,24 @@ public class RequestResource {
             RequestMessage<String> messageData = 
                 new RequestMessage<String>(RequestMessageType.DENY, id);
 
-            MessageProducer producer = session.createProducer(queue);
+           MessageProducer producer = session.createProducer(queue);
             ObjectMessage message = session.createObjectMessage();
 
+            TemporaryQueue tempQueue = session.createTemporaryQueue();
+            MessageConsumer consumer = session.createConsumer(tempQueue);
+
             message.setObject(messageData);
+            message.setJMSReplyTo(tempQueue);
             producer.send(message);
             
-            return "Message Sent";
+            ObjectMessage replyMessage = (ObjectMessage) consumer.receive(5000);
+            Request request = (Request) replyMessage.getObject();
+            
+            return this.buildToString(request.toJson());
         } catch (JMSException e) {
             return "Message Not Sent: " + e.getMessage();
+        } catch (NullPointerException e) {
+            return "Reply Message Not Recieved";
         }
     }
     
@@ -157,6 +210,7 @@ public class RequestResource {
     public void setupConnection() {
         try {
             conn = connectionFactory.createConnection();
+            conn.start();
             session = conn.createSession();
         } catch (JMSException e) {}
     }
