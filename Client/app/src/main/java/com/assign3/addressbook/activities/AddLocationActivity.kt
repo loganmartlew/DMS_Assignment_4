@@ -56,9 +56,9 @@ class AddLocationActivity : AppCompatActivity() {
                 val apiInterface = ApiInterface.create().createLocation(dto)
                 apiInterface.enqueue(object: Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                        val intent = Intent(this@AddLocationActivity, AppActivity::class.java);
-                        intent.putExtra("Username", name);
-                        startActivity(intent);
+                        val intent = Intent(this@AddLocationActivity, AppActivity::class.java)
+                        intent.putExtra("Username", name)
+                        startActivity(intent)
                     }
 
                     override fun onFailure(call: Call<Void>, t: Throwable) {
@@ -66,37 +66,40 @@ class AddLocationActivity : AppCompatActivity() {
                     }
                 })
             }
+        }
+        // Check if the user has granted location permission
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
 
-            // Check if the user has granted location permission
-            switch.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                    {
-                        requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
-                    }
-                    // Get the last known location
-                    fusedLocationProvider.lastLocation.addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) {
+                // disable address EditText
+                addressInput.isEnabled = false
 
-                            val location = task.result
-                            if (location != null) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                {
+                    requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
+                }
+                // Get the last known location
+                fusedLocationProvider.lastLocation.addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
 
-                                lat = location.latitude
-                                lng = location.longitude
+                        val location = task.result
+                        if (location != null) {
 
-                                // Get the address of the location
-                                val address = getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString())
-                                addressInput.setText(address.get())
+                            lat = location.latitude
+                            lng = location.longitude
 
-                            }else{
-                                Toast.makeText(this, "Could not get location", Toast.LENGTH_SHORT).show()
-                            }
+                            // Get the address of the location
+                            val address = getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString())
+                            addressInput.setText(address.get())
+
+                        }else{
+                            Toast.makeText(this, "Could not get location", Toast.LENGTH_SHORT).show()
                         }
                     }
-                } else {
-                    // Get the address of the location
-                    GetLatLngFromAdd(::callback).execute(addressInput.text.toString().replace(" ", "+"))
                 }
+            } else {
+                // Get the address of the location
+                GetLatLngFromAdd(::callback).execute(addressInput.text.toString().replace(" ", "+"))
             }
         }
 }
@@ -104,83 +107,83 @@ class AddLocationActivity : AppCompatActivity() {
     companion object{
         class GetLatLngFromAdd(var callback: KFunction3<Double?, Double?, String?, Unit>) : AsyncTask<String, Void, String>() {
 
-            var lat: Double = 0.0;
-            var lng: Double = 0.0;
+            var lat: Double = 0.0
+            var lng: Double = 0.0
 
             override fun onPostExecute(result: String?) {
                 try {
-                    var jsonObject = JSONObject(result);
+                    var jsonObject = JSONObject(result)
 
                     // Get the latitude and longitude from the JSON object
                     lat = jsonObject.getJSONArray("results")
                         .getJSONObject(0).getJSONObject("geometry")
-                        .getJSONObject("location").getDouble("lat");
+                        .getJSONObject("location").getDouble("lat")
 
                     lng = jsonObject.getJSONArray("results")
                         .getJSONObject(0).getJSONObject("geometry")
-                        .getJSONObject("location").getDouble("lng");
+                        .getJSONObject("location").getDouble("lng")
 
                     // Call the callback function
                     callback(lat, lng, null)
 
                 }catch (e: Exception){
-                    println(e);
+                    println(e)
                     Log.d("AddLocationActivity", "Failed to get lat lng post execute")
                 }
             }
 
             override fun doInBackground(vararg params: String): String {
-                var result = "";
+                var result = ""
                 try {
-                    var address: String = params[0];
-                    var data = HttpRequestHandler();
+                    var address: String = params[0]
+                    var data = HttpRequestHandler()
                     var url: String = String.format(
                         "https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk");
-                    result = data.getURLData(url);
-                    return result;
+                    result = data.getURLData(url)
+                    return result
                 }catch (e: Exception){
-                    println(e);
+                    println(e)
                     Log.d("AddLocationActivity", "Failed to get lat lng do in background")
                 }
-                return result;
+                return result
             }
 
         }
         // Get the address from the latitude and longitude
         class getAddressFromLatLng(var callback: KFunction3<Double?, Double?, String?, Unit>) : AsyncTask<String, Void, String>() {
 
-            var address: String = "";
+            var address: String = ""
 
             override fun onPostExecute(result: String?) {
                 try {
 
-                    var jsonObject = JSONObject(result);
+                    var jsonObject = JSONObject(result)
                     address = jsonObject.getJSONArray("results")
                         .getJSONObject(0).getString("formatted_address");
 
                     callback(null,null,address)
 
                 }catch (e: Exception){
-                    println(e);
+                    println(e)
                     Log.d("AddLocationActivity", "Failed to get address from lat lng post execute")
                 }
             }
 
             override fun doInBackground(vararg params: String): String {
-                var result = "";
+                var result = ""
                 try {
-                    var lat: Double = params[0].toDouble();
-                    var lng: Double = params[1].toDouble();
-                    var data = HttpRequestHandler();
+                    var lat: Double = params[0].toDouble()
+                    var lng: Double = params[1].toDouble()
+                    var data = HttpRequestHandler()
                     var url: String = String.format(
                         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=AIzaSyDcRu3LnakPAm8gHksuQI6jV3AfUME2PAk");
-                    result = data.getURLData(url);
-                    return result;
+                    result = data.getURLData(url)
+                    return result
                 }catch (e: Exception){
-                    println(e);
+                    println(e)
                     Log.d("AddLocationActivity", "Failed to get address from lat lng do in background")
                 }
-                return result;
+                return result
             }
         }
     }
