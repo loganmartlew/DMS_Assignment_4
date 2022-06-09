@@ -4,11 +4,13 @@
  */
 package dto;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Logan
  */
-public class RequestDTO {
+public class RequestDTO implements Serializable {
     private int locationId;
     private String fromUserName;
     private String toUserName;

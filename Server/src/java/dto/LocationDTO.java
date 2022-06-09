@@ -4,11 +4,13 @@
  */
 package dto;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Logan
  */
-public class LocationDTO {
+public class LocationDTO implements Serializable {
     private String name;
     private String address;
     private double latitude;

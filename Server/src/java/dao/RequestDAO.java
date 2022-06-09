@@ -7,6 +7,7 @@ package dao;
 import dto.RequestDTO;
 import entities.Location;
 import entities.Request;
+import entities.RequestStatus;
 import entities.User;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
@@ -51,5 +52,23 @@ public class RequestDAO {
         Query query = em.createQuery("SELECT r FROM Request r", Request.class);
         List<Request> requests = query.getResultList();
         return requests;
+    }
+    
+    public Request acceptRequest(int id) {
+        Request request = em.find(Request.class, id);
+        
+        request.setStatus(RequestStatus.ACCEPTED);
+        em.persist(request);
+        
+        return request;
+    }
+    
+    public Request denyRequest(int id) {
+        Request request = em.find(Request.class, id);
+        
+        request.setStatus(RequestStatus.REJECTED);
+        em.persist(request);
+        
+        return request;
     }
 }

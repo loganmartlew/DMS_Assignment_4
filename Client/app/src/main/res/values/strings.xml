@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">Address Book</string>
     <string name="activity_title_locations_list">My Locations</string>
-    <string name="activity_title_add_location">New Location</string>
     <string name="activity_title_users_list">Other Users</string>
+    <string name="activity_title_notifications_list">Notifications</string>
+    <string name="activity_title_add_location">New Location</string>
     <string name="activity_title_location_details">Location Details</string>
     <string name="activity_title_user_details">User Details</string>
 
@@ -14,6 +15,8 @@
     <string name="action_request_pending">Request Pending...</string>
     <string name="action_request_accepted">View Details</string>
     <string name="action_request_rejected">Request Rejected</string>
+    <string name="action_accept">Accept</string>
+    <string name="action_deny">Deny</string>
 
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
