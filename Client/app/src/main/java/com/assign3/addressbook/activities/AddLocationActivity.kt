@@ -81,8 +81,8 @@ class AddLocationActivity : AppCompatActivity() {
         // Submit button
         button.setOnClickListener{
 
-            fun callback(lat: Double?, lng: Double?, address: String?) {
-                val dto = LocationDTO(nameInput.text.toString(), addressInput.text.toString(), lat.toString(), lng.toString(), name!!)
+            fun callback(lat: Double, lng: Double, address: String) {
+                val dto = LocationDTO(nameInput.text.toString(), address, lat.toString(), lng.toString(), name!!)
 
                 val apiInterface = ApiInterface.create().createLocation(dto)
                 apiInterface.enqueue(object: Callback<Void> {
@@ -108,7 +108,7 @@ class AddLocationActivity : AppCompatActivity() {
 }
     // Get the latitude and longitude from the address
     companion object {
-        class GetLatLngFromAdd(var callback: KFunction3<Double?, Double?, String?, Unit>) :
+        class GetLatLngFromAdd(var callback: KFunction3<Double, Double, String, Unit>) :
             AsyncTask<String, Void, String>() {
 
             var lat: Double = 0.0
@@ -156,7 +156,7 @@ class AddLocationActivity : AppCompatActivity() {
 
         }
         // Get the address from the latitude and longitude
-        class GetAddressFromLatLng(var callback: KFunction3<Double?, Double?, String?, Unit>) : AsyncTask<String, Void, String>() {
+        class GetAddressFromLatLng(var callback: KFunction3<Double, Double, String, Unit>) : AsyncTask<String, Void, String>() {
 
             var address: String = ""
             var lat: Double = 0.0
