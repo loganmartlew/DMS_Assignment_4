@@ -11,3 +11,5 @@ Server/nbproject/private/private.properties
 /Server/dist/
 Client/.idea/misc.xml
 Server/nbproject/private/private.xml
+ApiInterface.kt
+Client/app/src/main/java/com/assign3/addressbook/api/ApiInterface.kt
