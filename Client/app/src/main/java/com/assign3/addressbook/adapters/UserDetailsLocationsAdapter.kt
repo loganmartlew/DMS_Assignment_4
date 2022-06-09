@@ -1,6 +1,7 @@
 package com.assign3.addressbook.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.assign3.addressbook.R
+import com.assign3.addressbook.activities.LocationDetailsActivity
 import com.assign3.addressbook.api.ApiInterface
 import com.assign3.addressbook.api.RequestDTO
 import com.assign3.addressbook.models.Location
@@ -72,7 +74,12 @@ class UserDetailsLocationsAdapter(
                     RequestStatus.ACCEPTED.text -> {
                         viewHolder.detailsButton.text = context.getString(R.string.action_request_accepted)
                         viewHolder.detailsButton.setOnClickListener {
-                            Log.d("Details", "View details")
+                            val intent = Intent(context, LocationDetailsActivity::class.java)
+                            intent.putExtra("Username", mClientUserName)
+                            intent.putExtra("lat", location.latitude)
+                            intent.putExtra("long", location.longitude)
+                            intent.putExtra("address", location.address)
+                            context.startActivity(intent)
                         }
                     }
                     RequestStatus.REJECTED.text -> {
