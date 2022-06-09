@@ -52,6 +52,7 @@ class UserDetailsLocationsAdapter(
             apiInterface.enqueue(object: Callback<Void> {
                 override fun onResponse(call: Call<Void>, response: Response<Void>) {
                     if (response.isSuccessful) {
+                        Thread.sleep(200)
                         update()
                     }
                 }

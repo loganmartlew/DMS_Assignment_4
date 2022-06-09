@@ -89,8 +89,20 @@ public class RequestResource {
         dto.setFromUserName(fromUserName);
         dto.setToUserName(toUserName);
         
-        Request newRequest = requestDao.createRequest(dto);
-        return this.buildToString(newRequest.toJson());
+        try {
+            RequestMessage<RequestDTO> messageData = 
+                new RequestMessage<RequestDTO>(RequestMessageType.CREATE, dto);
+
+            MessageProducer producer = session.createProducer(queue);
+            ObjectMessage message = session.createObjectMessage();
+
+            message.setObject(messageData);
+            producer.send(message);
+            
+            return "Message Sent";
+        } catch (JMSException e) {
+            return "Message Not Sent: " + e.getMessage();
+        }
     }
     
     @PATCH

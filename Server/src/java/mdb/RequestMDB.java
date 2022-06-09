@@ -5,6 +5,7 @@
 package mdb;
 
 import dao.RequestDAO;
+import dto.RequestDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Resource;
@@ -56,6 +57,11 @@ public class RequestMDB implements MessageListener {
                 
                 RequestMessage requestMessage = (RequestMessage) ((ObjectMessage) message).getObject();
                 RequestMessageType type = requestMessage.getType();
+                
+                if (type == RequestMessageType.CREATE) {
+                    RequestMessage<RequestDTO> typedMessage = requestMessage;
+                    requestDao.createRequest(typedMessage.getData());
+                }
                 
                 if (type == RequestMessageType.ACCEPT) {
                     RequestMessage<String> typedMessage = requestMessage;
