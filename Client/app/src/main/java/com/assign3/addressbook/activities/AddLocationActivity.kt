@@ -41,14 +41,14 @@ class AddLocationActivity : AppCompatActivity() {
                 val dto = LocationDTO(nameInput.text.toString(), addressInput.text.toString(), lat.toString(), lng.toString(), name!!)
 
                 val apiInterface = ApiInterface.create().createLocation(dto)
-                apiInterface.enqueue(object: Callback<Location> {
-                    override fun onResponse(call: Call<Location>, response: Response<Location>) {
+                apiInterface.enqueue(object: Callback<Void> {
+                    override fun onResponse(call: Call<Void>, response: Response<Void>) {
                         val intent = Intent(this@AddLocationActivity, AppActivity::class.java);
                         intent.putExtra("Username", name);
                         startActivity(intent);
                     }
 
-                    override fun onFailure(call: Call<Location>, t: Throwable) {
+                    override fun onFailure(call: Call<Void>, t: Throwable) {
                         Log.d("AddLocationActivity", "Failed to add location")
                     }
                 })

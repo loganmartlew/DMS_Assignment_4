@@ -23,7 +23,7 @@ import java.util.List;
  * @author Logan
  */
 @Entity
-@Table(name = "tkj2567_addressbook_users")
+@Table(name = "tkj2567_addressbook_users_2")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

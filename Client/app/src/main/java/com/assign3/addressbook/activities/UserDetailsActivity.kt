@@ -10,6 +10,7 @@ import com.assign3.addressbook.R
 import com.assign3.addressbook.adapters.LocationsListAdapter
 import com.assign3.addressbook.adapters.UserDetailsLocationsAdapter
 import com.assign3.addressbook.api.ApiInterface
+import com.assign3.addressbook.models.Request
 import com.assign3.addressbook.models.User
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,15 +26,28 @@ class UserDetailsActivity: AppCompatActivity() {
         val userDetailsName: String = intent.getStringExtra("UsernameDetails") as String
 
         val locationsView: RecyclerView = findViewById(R.id.rvUserLocations)
-        val adapter = UserDetailsLocationsAdapter()
+        val adapter = UserDetailsLocationsAdapter(name, userDetailsName)
         locationsView.adapter = adapter
         locationsView.layoutManager = LinearLayoutManager(this)
 
         val userNameText: TextView = findViewById(R.id.userDetailsName)
         userNameText.text = userDetailsName
 
-        val apiInterface = ApiInterface.create().getUser(userDetailsName)
-        apiInterface.enqueue(object: Callback<User> {
+        adapter.update = {
+            updateAdapter(adapter, name, userDetailsName, userNameText)
+        }
+
+        updateAdapter(adapter, name, userDetailsName, userNameText)
+    }
+
+    fun updateAdapter(
+        adapter: UserDetailsLocationsAdapter,
+        name: String,
+        userDetailsName: String,
+        userNameText: TextView
+    ) {
+        val apiGetUser = ApiInterface.create().getUser(userDetailsName)
+        apiGetUser.enqueue(object: Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if(response?.body() != null) {
                     val user = response.body()!!
@@ -46,6 +60,21 @@ class UserDetailsActivity: AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<User>?, t: Throwable?) {
+            }
+        })
+
+        val apiGetRequests = ApiInterface.create().getOutgoingRequests(name)
+        apiGetRequests.enqueue(object: Callback<List<Request>> {
+            override fun onResponse(call: Call<List<Request>>, response: Response<List<Request>>) {
+                if(response?.body() != null) {
+                    val requests = response.body()!!
+
+                    adapter.mRequests = requests
+                    adapter.notifyDataSetChanged()
+                }
+            }
+
+            override fun onFailure(call: Call<List<Request>>?, t: Throwable?) {
             }
         })
     }
