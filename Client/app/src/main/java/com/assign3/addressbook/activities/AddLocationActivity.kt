@@ -67,19 +67,24 @@ class AddLocationActivity : AppCompatActivity() {
                 })
             }
 
-            // Get the name and address from the input fields
+            // Check if the user has granted location permission
             switch.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                     {
                         requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), 10)
                     }
+                    // Get the last known location
                     fusedLocationProvider.lastLocation.addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
+
                             val location = task.result
                             if (location != null) {
+
                                 lat = location.latitude
                                 lng = location.longitude
+
+                                // Get the address of the location
                                 val address = getAddressFromLatLng(::callback).execute(lat.toString(), lng.toString())
                                 addressInput.setText(address.get())
 
@@ -89,6 +94,7 @@ class AddLocationActivity : AppCompatActivity() {
                         }
                     }
                 } else {
+                    // Get the address of the location
                     GetLatLngFromAdd(::callback).execute(addressInput.text.toString().replace(" ", "+"))
                 }
             }

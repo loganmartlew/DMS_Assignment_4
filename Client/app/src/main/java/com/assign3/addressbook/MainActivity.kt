@@ -83,11 +83,16 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if(requestCode.equals(PERMISSION_REQUEST_CODE)){
+            
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+
                 Toast.makeText(applicationContext, "Permission Granted", Toast.LENGTH_SHORT).show()
                 getCurrentLocation()
+
             }else{
+
                 Toast.makeText(applicationContext, "Permission Denied", Toast.LENGTH_SHORT).show()
+
             }
         }
     }
